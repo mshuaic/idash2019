@@ -17,7 +17,7 @@
  `git clone https://github.com/ethereum/go-ethereum`
  - Switch to the required the commit ([FAQ Q4](https://docs.google.com/document/d/1oGcCKYwqATImAm5hTjY5GjfHvUI0Gd_fpYRR8po4joA/edit)).  
  `git checkout 4bcc0a37`
- - Build *geth* and **bootnode*
+ - Build *geth* and *bootnode*  
  `make all`
 
 ## Setup Ethereum
