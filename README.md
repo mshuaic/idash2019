@@ -51,7 +51,7 @@
    `geth --datadir node1 init genesis.json`
 
  - Start Ethereum peer node with **different** ports and location  
-   `geth --datadir node1 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --port 30304 --rpcport 8546` --bootnodes "enode://xxxxxxx@127.0.0.1:30303" 
+   `geth --datadir node1 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --port 30304 --rpcport 8546` 
    
  - rpc to the master node  
    `geth attach http://127.0.0.1:8545`  
