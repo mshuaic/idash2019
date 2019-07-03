@@ -44,19 +44,18 @@
  `geth --datadir node0 init genesis.json`
  
  - Start Ethereum peer node  
- `geth --datadir node0 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3"`
- 
+ `geth --datadir node0 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3"`  
+ It returns a enode link: *enode://xxxxxxx@127.0.0.1:30303*
 ## Connect Peers
  - Initialize genesis block in **different** location  
    `geth --datadir node1 init genesis.json`
 
  - Start Ethereum peer node with **different** ports and location  
-   `geth --datadir node1 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --port 30304 --rpcport 8546`  
-   It returns a enode link: *enode://xxxxxxx@127.0.0.1:30304*
- 
+   `geth --datadir node1 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --port 30304 --rpcport 8546` --bootnodes "enode://xxxxxxx@127.0.0.1:30303" 
+   
  - rpc to the master node  
    `geth attach http://127.0.0.1:8545`  
-   `admin.addPeers("enode://xxxxxxx@127.0.0.1:30304")`
+   `admin.addPeers("enode://xxxxxxx@127.0.0.1:30303")`
 
  - Check if peer is connected  
    `admin.peers`
