@@ -3,12 +3,14 @@ pragma solidity ^0.5.9;
 library GeneDrugLib{
     struct GeneDrug {
         string geneName;
-        string variantNumber;
+        uint variantNumber;
         string drugName;
         string outcome;
         bool suspectedRelation;
         bool seriousSideEffect;
     }
+
+    enum OUTCOME {IMPROVED, UNCHANGED, DETERIORATED}
     
     struct Relation {
         string geneName;
@@ -46,7 +48,7 @@ library GeneDrugLib{
     }
 
     enum attributes {geneName, variantNumber, drugName}
-    
+
     // function convert(GeneDrug memory ori) public pure returns(GeneDrug memory){
     //     bytes memory tmp = abi.encode(ori.geneName,ori.variantNumber,ori.drugName,ori.outcome,ori.suspectedRelation,ori.seriousSideEffect);
     //     string memory geneName;

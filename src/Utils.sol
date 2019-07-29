@@ -1,6 +1,12 @@
 pragma solidity ^0.5.9;
+pragma experimental ABIEncoderV2;
 
 library Utils {
+    uint constant NUM_LIST = 3;
+
+    event debug(string, uint);
+    event debug(string, string);
+    
     function uintToStr(uint v) internal pure returns (string memory){
         return string(uintToBytes(v));
     }
@@ -109,8 +115,63 @@ library Utils {
             }
         }
         return -1;
-    } 
-    
+    }
+
+    function shortestList(uint[][NUM_LIST] memory lists) internal pure returns(uint) {
+        uint shortestIndex = 0;
+        uint min = 2 ** 255;
+        for (uint i=0;i<lists.length;i++) {
+            // when lists[i].length == 0, it is a * list
+            if (lists[i].length != 0 && lists[i].length < min) {
+                min == lists[i].length;
+                shortestIndex = i;
+            }
+        }
+        return shortestIndex;
+    }
+
+    function find_internal(uint[] memory data, uint begin, uint end, uint value) private pure returns (uint ret) {
+        uint len = end - begin;
+        if (len == 0 || (len == 1 && data[begin] != value)) {
+            return 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+        }
+        uint mid = begin + len / 2;
+        uint v = data[mid];
+        if (value < v)
+            return find_internal(data, begin, mid, value);
+        else if (value > v)
+            return find_internal(data, mid + 1, end, value);
+        else
+            return mid;
+    }
+
+    function binSearch(uint[] memory list, uint target) internal pure returns(bool) {
+        return find_internal(list, 0, list.length, target) != 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    }
+
+    function intersect(uint[][NUM_LIST] memory lists, uint shortestListIndex) internal pure returns(uint[] memory, uint size) {
+        uint index = 0;
+        bool isFound = true;
+        uint[] memory shortest = lists[shortestListIndex];
+        uint[] memory result = new uint[](shortest.length);
+        for (uint i=0; i < shortest.length; i++) {
+            isFound = true;
+            for (uint j=0; j < NUM_LIST; j++ ) {
+                // when lists[i].length == 0, it is a * list
+                if (j != shortestListIndex && lists[j].length != 0) {
+                    if (binSearch(lists[j], shortest[i]) == false) {
+                        isFound = false;
+                        break;
+                    }
+                }
+            }
+            if(isFound == true) {
+                result[index++] = shortest[i];
+            }
+        }
+        return (result, index);
+    }
+
     function test(uint a) public pure returns(string memory) {
         return uintToStr(a);
     }

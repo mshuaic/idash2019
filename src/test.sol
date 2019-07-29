@@ -7,14 +7,13 @@ import "./Utils.sol";
 import "./Math.sol";
 
 contract test {
-    event log(bytes);
     using Database for Database.Table;
     uint8 internal constant ATTRIBUTES_NUM = 3; 
     Database.Table[ATTRIBUTES_NUM] tables;
-    // uint[] filter; 
+    GeneDrugLib.GeneDrug[] data;
     uint numObservations;
+    uint numRelations;
     mapping (address => uint) numObservationsFromSenders;
-    // mapping (bytes => GeneDrugLib.Outcome[])  trial;
     
     event debug(string);    
     
@@ -47,12 +46,17 @@ contract test {
                                 bool suspectedRelation,
                                 bool seriousSideEffect
                                 ) public {
-        GeneDrugLib.GeneDrug memory ob = GeneDrugLib.GeneDrug(geneName,Utils.uintToStr(variantNumber),drugName,outcome,suspectedRelation,seriousSideEffect);
+        GeneDrugLib.GeneDrug memory ob = GeneDrugLib.GeneDrug(geneName,variantNumber,drugName,outcome,suspectedRelation,seriousSideEffect);
+
+        data.push(ob);
         
-        tables[uint(GeneDrugLib.attributes.geneName)].insert(geneName,ob);
-        tables[uint(GeneDrugLib.attributes.variantNumber)].insert(Utils.uintToStr(variantNumber),ob);
-        tables[uint(GeneDrugLib.attributes.drugName)].insert(drugName,ob);
+        tables[uint(GeneDrugLib.attributes.geneName)].insert(geneName,numObservations);
+        tables[uint(GeneDrugLib.attributes.variantNumber)].insert(Utils.uintToStr(variantNumber),numObservations);
+        tables[uint(GeneDrugLib.attributes.drugName)].insert(drugName,numObservations);
         
+        if (entryExists(geneName, Utils.uintToStr(variantNumber),drugName) == false) {
+            numRelations++;
+        }
         
         numObservations++;
         numObservationsFromSenders[msg.sender]++;
@@ -60,7 +64,7 @@ contract test {
         
     }
 
-    function query(GeneDrugLib.attributes attribute, string memory key) private view returns(GeneDrugLib.GeneDrug[] memory) {
+    function query(GeneDrugLib.attributes attribute, string memory key) private view returns(uint[] memory) {
         return tables[uint(attribute)].query(key);
     }
     
@@ -82,62 +86,56 @@ contract test {
         string memory variantNumber,
         string memory drug
     ) public view returns (GeneDrugRelation[] memory) {
+
+        GeneDrugRelation[] memory result;
+        
         uint[] memory indexList;
-        uint indexList_size;
+        uint size;
+        (indexList, size) = query_private(geneName,variantNumber,drug);
 
-        GeneDrugLib.GeneDrug[] memory observations;
-
-        GeneDrugRelation[] memory result;         
-        (indexList, indexList_size, observations) = intersect(geneName, variantNumber, drug);
-        GeneDrugLib.Relation[] memory relations;
-        GeneDrugLib.GeneDrug memory ob;
-        uint size = indexList_size == 0 ? observations.length : indexList_size;
-        result = new GeneDrugRelation[](size);
-        relations = new GeneDrugLib.Relation[](size);
+        GeneDrugLib.Relation[] memory unique_relations = new GeneDrugLib.Relation[](size);
+        bytes[] memory unique_relations_bytes = new bytes[](size);
         uint num_unique_relations;
-        bytes[] memory relations_bytes_arr = new bytes[](size);
+
         GeneDrugLib.Outcome[][] memory outcomes = new GeneDrugLib.Outcome[][](size);
         uint[] memory num_outcomes = new uint[](size);
         for (uint i=0;i<size;i++) {
-            ob = indexList_size == 0 ? observations[i] : observations[indexList[i]];
-            GeneDrugLib.Relation memory r = GeneDrugLib.Relation(ob.geneName, ob.variantNumber, ob.drugName);
+            GeneDrugLib.GeneDrug memory ob = data[indexList[i]];
+            GeneDrugLib.Relation memory r = GeneDrugLib.Relation(ob.geneName, Utils.uintToStr(ob.variantNumber), ob.drugName);
             bytes memory relation_bytes = GeneDrugLib.convert(r);
-            int index = Utils.contains(relations_bytes_arr, relation_bytes);
+            int index = Utils.contains(unique_relations_bytes, relation_bytes);
+            // not find 
             if (index == -1) {
-                relations_bytes_arr[num_unique_relations] = relation_bytes;
-                relations[num_unique_relations] = GeneDrugLib.Relation(ob.geneName, ob.variantNumber, ob.drugName);
-                // fix the size later
+                unique_relations_bytes[num_unique_relations] = relation_bytes;
+                unique_relations[num_unique_relations] = r;
+
                 outcomes[num_unique_relations] = new GeneDrugLib.Outcome[](size);
                 outcomes[num_unique_relations][0] = GeneDrugLib.Outcome(ob.outcome, ob.suspectedRelation, ob.seriousSideEffect);
                 num_outcomes[num_unique_relations]++;
                 num_unique_relations++;
-             } 
-            //  else {
-            //     outcomes[num_unique_relations][num_outcomes[num_unique_relations]] = GeneDrugLib.Outcome(ob.outcome, ob.suspectedRelation, ob.seriousSideEffect);
-            // }
+            } else {
+                outcomes[uint(index)][num_outcomes[uint(index)]] = GeneDrugLib.Outcome(ob.outcome, ob.suspectedRelation, ob.seriousSideEffect);
+                num_outcomes[uint(index)]++;
+            }          
         }
-        
 
+        result = new GeneDrugRelation[](num_unique_relations);
+        
         for(uint i=0; i< num_unique_relations; i++) {
-            result[i] = getStat(relations[i],outcomes[i]);
+            result[i] = getStat(unique_relations[i],outcomes[i],num_outcomes[i]);
         }
         return result;
     }
 
     function getStat(GeneDrugLib.Relation memory relation,
-                     GeneDrugLib.Outcome[] memory outcomes) private pure
+                     GeneDrugLib.Outcome[] memory outcomes, uint num_outcomes) private pure
         returns(GeneDrugRelation memory){
         uint improvedCount;
-        string memory improvedPercent;
         uint unchangedCount;
-        string memory unchangedPercent;
         uint deterioratedCount;
-        string memory deterioratedPercent;
         uint suspectedRelationCount;
-        string memory suspectedRelationPercent;
         uint sideEffectCount;
-        string memory sideEffectPercent;
-        for (uint i=0;i<outcomes.length;i++) {
+        for (uint i=0;i<num_outcomes;i++) {
             if (Utils.equals(outcomes[i].outcome, "IMPROVED")) {
                 improvedCount++;
             } else if (Utils.equals(outcomes[i].outcome, "UNCHANGED")) {
@@ -151,162 +149,56 @@ contract test {
             if (outcomes[i].seriousSideEffect == true){
                 sideEffectCount++;
             }
-            improvedPercent = Math.div(improvedCount, outcomes.length);
-            unchangedPercent = Math.div(unchangedCount, outcomes.length);
-            deterioratedPercent = Math.div(deterioratedCount, outcomes.length);
-            suspectedRelationPercent = Math.div(suspectedRelationCount, outcomes.length);
-            sideEffectPercent = Math.div(sideEffectCount, outcomes.length);
+        }
+        return GeneDrugRelation(relation.geneName, Utils.strToUint(relation.variantNumber),
+                                relation.drugName, num_outcomes,
+                                improvedCount, Math.div(improvedCount, num_outcomes),
+                                unchangedCount, Math.div(unchangedCount, num_outcomes),
+                                deterioratedCount, Math.div(deterioratedCount, num_outcomes),
+                                suspectedRelationCount, Math.div(suspectedRelationCount, num_outcomes),
+                                sideEffectCount, Math.div(sideEffectCount, num_outcomes));
+    }    
+    
+
+    function query_private(
+        string memory geneName,
+        string memory variantNumber,
+        string memory drugName) private view returns (uint[] memory, uint) {
+        if (Utils.isStar(geneName) && Utils.isStar(variantNumber) && Utils.isStar(drugName)){
+            uint[] memory list = new uint[](data.length);
+            for (uint i=0;i<data.length;i++) {
+                list[i] = i;
+            }
+            return (list,list.length);
         }
 
-        return GeneDrugRelation(relation.geneName, Utils.strToUint(relation.variantNumber), relation.drugName, outcomes.length, improvedCount, improvedPercent, unchangedCount, unchangedPercent, deterioratedCount, deterioratedPercent, suspectedRelationCount, suspectedRelationPercent, sideEffectCount, sideEffectPercent);
+        uint[] memory geneList = Utils.isStar(geneName) ? new uint[](0) : query(GeneDrugLib.attributes.geneName, geneName);
+        uint[] memory variantList = Utils.isStar(variantNumber) ? new uint[](0) : query(GeneDrugLib.attributes.variantNumber, variantNumber);
+        uint[] memory drugList = Utils.isStar(drugName) ? new uint[](0) : query(GeneDrugLib.attributes.drugName, drugName);
+        /* uint[][] memory lists = [geneList, variantList, drugList]; */
+        uint  shortestListIndex = Utils.shortestList([geneList, variantList, drugList]);
+        
+        return Utils.intersect([geneList, variantList, drugList], shortestListIndex);
     }
     
-    
-    function filer1(GeneDrugLib.attributes attribute, GeneDrugLib.GeneDrug[] memory data, string memory key) private view returns(uint[] memory, uint){
-        uint index = 0;
-        uint[] memory filter = new uint[](numObservations);
-        for (uint i=0;i<data.length;i++){
-            if ( (attribute == GeneDrugLib.attributes.geneName && Utils.equals(data[i].geneName,key) == true)
-                || (attribute == GeneDrugLib.attributes.variantNumber && Utils.equals(data[i].variantNumber,key) == true)
-                || (attribute == GeneDrugLib.attributes.drugName && Utils.equals(data[i].drugName,key) == true) ){
-                filter[index++] = i;
-            }
-        }
-        return (filter, index);
-    }
-    
-    function fiter2(GeneDrugLib.attributes attribute, GeneDrugLib.GeneDrug[] memory data, string memory key, uint[] memory filter, uint filter_size) private pure  returns (bool){
-        for (uint i=0;i<filter_size;i++){
-            if ( (attribute == GeneDrugLib.attributes.geneName && Utils.equals(data[filter[i]].geneName,key) == true)
-                || (attribute == GeneDrugLib.attributes.variantNumber && Utils.equals(data[filter[i]].variantNumber,key) == true)
-                || (attribute == GeneDrugLib.attributes.drugName && Utils.equals(data[filter[i]].drugName,key) == true) ){
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    function fiter3(GeneDrugLib.attributes attribute, GeneDrugLib.GeneDrug[] memory data, string memory key, uint[] memory filter, uint filter_size) private view returns (uint[] memory, uint){
-        uint[] memory indexList = new uint[](numObservations);
-        uint index;
-        for (uint i=0;i<filter_size;i++){
-            if ( (attribute == GeneDrugLib.attributes.geneName && Utils.equals(data[filter[i]].geneName,key) == true)
-                || (attribute == GeneDrugLib.attributes.variantNumber && Utils.equals(data[filter[i]].variantNumber,key) == true)
-                || (attribute == GeneDrugLib.attributes.drugName && Utils.equals(data[filter[i]].drugName,key) == true) ){
-                indexList[index++] = i;
-            }
-        }
-        return (indexList, index);
-    }
-    
-    function intersect(string memory geneName,
-                       string memory variantNumber,
-                       string memory drugName
-                       ) public view returns(uint[] memory, uint, GeneDrugLib.GeneDrug[] memory) {
-        GeneDrugLib.GeneDrug[] memory result;
-        uint filter_size = 0;
-        uint[] memory filter;
-        // emit debug("hellow");
-        if (Utils.isStar(geneName) == false) {
-            result = query(GeneDrugLib.attributes.geneName,geneName);
-            if (Utils.isStar(variantNumber) == false) {
-                // emit debug("variantNumber != star");
-                (filter, filter_size) = filer1(GeneDrugLib.attributes.variantNumber, result, variantNumber);
-                if  (Utils.isStar(drugName) == false) {
-                    (filter, filter_size) = fiter3(GeneDrugLib.attributes.drugName, result, drugName,filter,filter_size);
-                    return (filter, filter_size, result);
-                } else {
-                    // emit debug("no bug");
-                    return (new uint[](0), 0, result);
-                }
-            } else {
-                // emit debug("variantNumber == star");
-                if (Utils.isStar(drugName) == false) {
-                    (filter, filter_size) = filer1(GeneDrugLib.attributes.drugName, result, drugName);
-                    return (filter, filter_size, result);
-                } else {
-                    return (new uint[](0), 0, result);
-                }
-            }
-            
-        } else {
-            // emit debug("genename == star");
-            if (Utils.isStar(variantNumber) == false) {
-                result = query(GeneDrugLib.attributes.variantNumber,variantNumber);
-                if  (Utils.isStar(drugName) == false) {
-                    (filter, filter_size) = filer1(GeneDrugLib.attributes.drugName, result, drugName);
-                    return (filter, filter_size, new GeneDrugLib.GeneDrug[](0));
-                } else {
-                    return (new uint[](0), 0, result);
-                }
-            } else {
-                if (Utils.isStar(drugName) == false) {
-                    result = query(GeneDrugLib.attributes.drugName,drugName);
-                    return (new uint[](0), 0, result);
-                } else {
-                    return (new uint[](0), 0, new GeneDrugLib.GeneDrug[](0));
-                }
-            }
-        }
-    }
-
-
     function entryExists(
                          string memory geneName,
                          string memory variantNumber,
                          string memory drugName
                          ) public view returns (bool){
-        GeneDrugLib.GeneDrug[] memory result;
-        uint filter_size = 0;
-        uint[] memory filter;
-        // emit debug("hellow");
-        if (Utils.isStar(geneName) == false) {
-            result = query(GeneDrugLib.attributes.geneName,geneName);
-            if (Utils.isStar(variantNumber) == false) {
-                // emit debug("variantNumber != star");
-                (filter, filter_size) = filer1(GeneDrugLib.attributes.variantNumber, result, variantNumber);
-                if  (Utils.isStar(drugName) == false) {
-                    // emit debug("bug");
-                    return fiter2(GeneDrugLib.attributes.drugName, result, drugName,filter,filter_size);
-                } else {
-                    // emit debug("no bug");
-                    return result.length > 0;
-                }
-            } else {
-                // emit debug("variantNumber == star");
-                if (Utils.isStar(drugName) == false) {
-                    (, filter_size) = filer1(GeneDrugLib.attributes.drugName, result, drugName);
-                    return filter_size > 0;
-                } else {
-                    return result.length > 0;
-                }
-            }
-            
-        } else {
-            // emit debug("genename == star");
-            if (Utils.isStar(variantNumber) == false) {
-                result = query(GeneDrugLib.attributes.variantNumber,variantNumber);
-                if  (Utils.isStar(drugName) == false) {
-                    (, filter_size) = filer1(GeneDrugLib.attributes.drugName, result, drugName);
-                    return filter_size > 0;
-                } else {
-                    return result.length > 0;
-                }
-            } else {
-                if (Utils.isStar(drugName) == false) {
-                    result = query(GeneDrugLib.attributes.drugName,drugName);
-                    return result.length > 0;
-                } else {
-                    return numObservations>0;
-                }
-            }
+        if (numObservations == 0) {
+            return false;
         }
+        uint size;
+        (,size) = query_private(geneName,variantNumber,drugName);
+        return size > 0;
+            
     }
 
     /** Return the total number of known relations, a.k.a. the number of unique geneName,-name, variant-number, drug-name pairs
      */
     function getNumRelations () public view returns(uint){
-        // Code here
+        return numRelations;
     }
     
     /** Return the total number of recorded observations, regardless of sender.
