@@ -80,7 +80,7 @@ class LocalDB(Database):
         return result
 
     def getKeys(self):
-        return list(self.db[['geneName', 'variantNumber', 'drugName']].itertuples(index=False, name=False))
+        return list(self.db[['geneName', 'variantNumber', 'drugName']].itertuples(index=False, name=None))
 
 
 def div(a, b):
