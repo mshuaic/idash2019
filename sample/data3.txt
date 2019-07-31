@@ -1,0 +1,100 @@
+CYP2C9	80	interferon alfa-2b	DETERIORATED	false	false
+DYNC2H1	89	protriptyline	IMPROVED	true	false
+HLA-DQA1	64	carboplatin	UNCHANGED	false	false
+GRIK4	84	sulfadiazine	DETERIORATED	false	false
+CYP2A7P1	8	escitalopram	IMPROVED	true	true
+ADRB2	14	hydroxychloroquine	IMPROVED	true	true
+PROC	50	dabrafenib	DETERIORATED	true	false
+CHRNA3	59	brexpiprazole	DETERIORATED	false	true
+TANC1	64	tacrolimus	UNCHANGED	true	true
+C8orf34	61	alfentanil	DETERIORATED	false	false
+LPA	80	quinidine	UNCHANGED	true	true
+FLOT1	71	ciprofloxacin	DETERIORATED	false	true
+SEMA3C	18	mycophenolic acid	DETERIORATED	true	false
+NT5C2	87	mefloquine	DETERIORATED	true	true
+SERPINC1	51	spironolactone	UNCHANGED	false	true
+GBA	48	interferon alfa-2b	IMPROVED	true	false
+ABCC4	16	tolterodine	IMPROVED	true	false
+LPA	93	Alkylating Agents	DETERIORATED	true	true
+CHRNA3	88	antidepressants	DETERIORATED	true	false
+CYB5R3	29	sunitinib	IMPROVED	false	true
+NEDD4L	70	azathioprine	IMPROVED	false	false
+NAGS	49	carbamazepine	UNCHANGED	true	true
+G6PD	2	gemcitabine	IMPROVED	false	true
+SLC6A4	75	interferon alfa-2b	IMPROVED	true	true
+GSTP1	63	lidocaine	IMPROVED	true	false
+MT-RNR1	91	carboplatin	UNCHANGED	false	true
+FCGR3A	58	probenecid	IMPROVED	true	true
+CCHCR1	64	phenazopyridine	DETERIORATED	true	true
+GBA	64	celecoxib	UNCHANGED	true	true
+ADRB2	45	spironolactone	DETERIORATED	false	true
+FKBP5	25	anthracyclines and related substances	UNCHANGED	false	true
+TPMT	54	chloroquine	IMPROVED	false	false
+TP53	11	nicotine	UNCHANGED	true	false
+SERPINC1	46	salbutamol	DETERIORATED	true	true
+ABCC4	69	cyclosporine	UNCHANGED	false	true
+CYP2B6	64	phenprocoumon	UNCHANGED	true	false
+EPHX1	11	oxaliplatin	IMPROVED	false	true
+HTR2C	55	phenprocoumon	IMPROVED	false	false
+HMGCR	24	hydroxychloroquine	DETERIORATED	true	false
+TCF7L2	25	tegafur	UNCHANGED	true	false
+HAS3	81	glibenclamide	IMPROVED	true	true
+HTR2C	6	velaglucerase alfa	DETERIORATED	true	false
+CRHR1	41	caffeine	UNCHANGED	false	true
+XRCC1	55	sunitinib	UNCHANGED	false	false
+NEDD4L	85	abacavir	IMPROVED	true	true
+HTR1A	46	nevirapine	IMPROVED	true	true
+SOD2	26	cevimeline	UNCHANGED	true	false
+GRIK4	24	Ace Inhibitors	DETERIORATED	false	true
+PTGS1	92	mercaptopurine	DETERIORATED	false	true
+LPA	2	tetrabenazine	UNCHANGED	false	false
+CETP	27	cevimeline	DETERIORATED	false	true
+UGT2B15	68	methotrexate	UNCHANGED	true	true
+LDLR	30	tiotropium	DETERIORATED	true	true
+ATIC	29	midazolam	UNCHANGED	true	true
+HPRT1	20	methadone	UNCHANGED	true	true
+BCHE	95	budesonide	IMPROVED	false	true
+FLOT1	21	salbutamol	UNCHANGED	false	true
+ATIC	84	diazepam	IMPROVED	true	false
+CES1	86	simvastatin	UNCHANGED	false	false
+TNF	88	cetuximab	DETERIORATED	false	false
+COMT	77	salmeterol	IMPROVED	true	false
+CYB5R1	9	budesonide	IMPROVED	true	true
+LTC4S	59	primaquine	IMPROVED	false	true
+CRHR2	38	pegloticase	IMPROVED	false	true
+LTC4S	70	chlorpropamide	UNCHANGED	true	false
+UGT1A1	96	norfloxacin	DETERIORATED	true	true
+CYP2C8	64	diclofenac	DETERIORATED	false	true
+C8orf34	25	perphenazine	IMPROVED	true	true
+IFNL3	10	lidocaine	UNCHANGED	true	true
+DPYD	28	pimozide	IMPROVED	false	true
+XRCC1	53	peginterferon alfa-2b	IMPROVED	false	false
+GGCX	1	mirtazapine	IMPROVED	true	true
+SLC28A3	3	acenocoumarol	UNCHANGED	true	true
+HLA-DRB1	23	pimozide	DETERIORATED	true	true
+CBR3	24	sulfacetamide	UNCHANGED	true	false
+SLCO1B1	94	desflurane	UNCHANGED	false	true
+XRCC1	37	diazepam	UNCHANGED	true	true
+GBA	30	salbutamol	IMPROVED	true	false
+ANKK1	12	metformin	DETERIORATED	true	true
+COL22A1	82	primaquine	DETERIORATED	false	false
+CRHR1	95	Ace Inhibitors	DETERIORATED	false	false
+CYP3A4	95	phenytoin	DETERIORATED	true	true
+TMEM43	43	thioridazine	IMPROVED	true	false
+ADORA2A	49	diclofenac	UNCHANGED	true	false
+LPA	12	oxycodone	IMPROVED	true	false
+COMT	88	cyclophosphamide	DETERIORATED	false	true
+CYP2B6	71	flecainide	DETERIORATED	true	false
+ACE	58	oxaliplatin	UNCHANGED	false	false
+F5	23	amitriptyline	UNCHANGED	true	false
+KCNIP4	65	nilotinib	DETERIORATED	false	false
+GSTM1	26	esomeprazole	IMPROVED	false	false
+UGT2B15	92	acenocoumarol	UNCHANGED	true	false
+CCHCR1	94	leucovorin	IMPROVED	false	true
+ANKK1	10	nicotine	IMPROVED	true	false
+ADD1	39	clobazam	UNCHANGED	true	true
+G6PD	20	efavirenz	IMPROVED	true	true
+C8orf34	42	sevoflurane	UNCHANGED	true	false
+OPRM1	86	ondansetron	UNCHANGED	true	true
+SLCO1B1	34	phenprocoumon	IMPROVED	true	true
+G6PD	72	peginterferon alfa-2b	IMPROVED	false	true

@@ -1,0 +1,100 @@
+CETP	31	acenocoumarol	DETERIORATED	true	false
+CETP	69	galantamine	IMPROVED	false	false
+NT5C2	25	clozapine	DETERIORATED	true	false
+SCN1A	35	anthracyclines and related substances	IMPROVED	true	false
+G6PD	83	flibanserin	UNCHANGED	false	true
+CYB5R1	92	etoposide	IMPROVED	false	false
+HPRT1	63	phenprocoumon	IMPROVED	true	true
+TCF7L2	81	enflurane	UNCHANGED	false	true
+MC4R	39	paroxetine	IMPROVED	false	true
+GSTP1	89	citalopram	IMPROVED	false	false
+COL22A1	45	sevoflurane	UNCHANGED	true	false
+OTC	71	risperidone	DETERIORATED	true	false
+IFNL4	35	palonosetron	DETERIORATED	false	false
+CALU	26	methazolamide	UNCHANGED	false	true
+PTGFR	39	tropisetron	UNCHANGED	true	true
+PRKCA	16	pimozide	IMPROVED	false	false
+CFTR	45	phenazopyridine	DETERIORATED	false	true
+FKBP5	9	caffeine	DETERIORATED	true	false
+TYMS	66	perphenazine	UNCHANGED	true	true
+EPHX1	39	digoxin	DETERIORATED	false	false
+ABCB1	43	divalproex sodium	DETERIORATED	true	true
+DPYD	10	codeine	UNCHANGED	true	false
+YEATS4	15	capecitabine	UNCHANGED	true	false
+FKBP5	77	lansoprazole	IMPROVED	true	false
+HLA-A	76	amitriptyline	DETERIORATED	false	true
+ATIC	85	thioridazine	DETERIORATED	true	false
+LTC4S	57	moxifloxacin	DETERIORATED	true	false
+CYP2D6	80	risperidone	IMPROVED	false	true
+HLA-C	34	rasburicase	UNCHANGED	false	false
+ASS1	47	sulfamethoxazole / trimethoprim	IMPROVED	true	true
+NAT2	18	propylthiouracil	UNCHANGED	false	false
+NAT1	88	sulfisoxazole	IMPROVED	true	false
+YEATS4	31	dimercaprol	DETERIORATED	false	true
+MT-RNR1	35	irinotecan	IMPROVED	true	false
+TMEM43	89	rosiglitazone	DETERIORATED	true	true
+PRKCA	94	salbutamol	IMPROVED	true	true
+FLOT1	54	mercaptopurine	DETERIORATED	true	false
+YEATS4	79	Bisphosphonates	DETERIORATED	true	false
+FDPS	47	norfloxacin	IMPROVED	false	false
+SLCO1B1	63	paroxetine	DETERIORATED	false	true
+CES1	29	terbinafine	IMPROVED	true	true
+C11orf65	39	bupropion	DETERIORATED	true	false
+NAGS	24	dapsone	DETERIORATED	true	false
+CYP2C8	55	atomoxetine	IMPROVED	false	true
+TCF7L2	86	codeine	UNCHANGED	true	true
+GRIK4	37	dextromethorphan	UNCHANGED	false	true
+TANC1	1	vitamin c	IMPROVED	true	true
+NUDT15	67	irinotecan	UNCHANGED	false	false
+SLCO1B1	46	cevimeline	UNCHANGED	false	true
+PROC	11	acenocoumarol	DETERIORATED	false	false
+CYP4F2	72	methylphenidate	DETERIORATED	false	true
+CYP2B6	65	nevirapine	UNCHANGED	true	true
+ANKK1	30	leucovorin	UNCHANGED	true	true
+KIF6	77	methylene blue	DETERIORATED	true	false
+ERCC1	77	mefloquine	DETERIORATED	false	true
+CRHR2	67	esomeprazole	DETERIORATED	false	true
+GBA	78	methazolamide	DETERIORATED	true	false
+HLA-C	98	divalproex sodium	IMPROVED	true	true
+CYB5R1	9	sulfasalazine	UNCHANGED	true	false
+ABCB1	65	rasburicase	DETERIORATED	false	false
+DRD2	62	tramadol	IMPROVED	true	false
+COL22A1	59	galantamine	IMPROVED	true	true
+KCNIP4	88	ivacaftor	IMPROVED	false	true
+HMGCR	38	mirtazapine	DETERIORATED	false	false
+NUDT15	43	timolol	IMPROVED	false	false
+MTHFR	38	oxazepam	UNCHANGED	true	false
+CACNA1S	28	cerivastatin	IMPROVED	true	false
+DPYD	63	naloxone	IMPROVED	true	false
+IFNL4	98	oxazepam	IMPROVED	true	true
+CYB5R3	24	mafenide	UNCHANGED	true	true
+XPC	84	voriconazole	UNCHANGED	false	true
+XPC	76	methadone	UNCHANGED	false	false
+FLOT1	29	sulfamethoxazole / trimethoprim	UNCHANGED	false	true
+UMPS	69	sodium nitrite	IMPROVED	false	false
+PRKCA	72	norfloxacin	IMPROVED	true	false
+GBA	87	sulfisoxazole	IMPROVED	false	false
+CRHR2	37	phenytoin	DETERIORATED	false	true
+DPYD	66	propranolol	DETERIORATED	true	true
+OTC	71	peginterferon alfa-2a	DETERIORATED	true	true
+EGF	6	interferon alfa-2b	UNCHANGED	false	false
+NAGS	10	primaquine	IMPROVED	true	true
+KIF6	51	voriconazole	IMPROVED	false	false
+CCHCR1	63	tacrolimus	IMPROVED	true	false
+PTGS1	6	atorvastatin	DETERIORATED	false	true
+CCHCR1	29	fluorouracil	DETERIORATED	true	true
+TNF	11	lansoprazole	IMPROVED	true	true
+HLA-DRB1	37	hydrochlorothiazide	IMPROVED	false	true
+GNB3	3	sevoflurane	UNCHANGED	false	false
+GSTM1	41	dolutegravir	UNCHANGED	true	true
+CPS1	37	azathioprine	DETERIORATED	false	true
+LTC4S	48	fluvoxamine	DETERIORATED	false	false
+CHRNA3	19	cetuximab	UNCHANGED	true	true
+CALU	17	olanzapine	DETERIORATED	true	true
+ABCC4	89	irinotecan	IMPROVED	false	true
+F5	93	allopurinol	DETERIORATED	false	true
+SEMA3C	92	sildenafil	DETERIORATED	false	true
+ACE	74	desipramine	IMPROVED	false	false
+HLA-A	22	propafenone	IMPROVED	false	false
+OPRM1	9	interferon alfa-2b	DETERIORATED	true	false
+HMGCR	14	cerivastatin	IMPROVED	false	true

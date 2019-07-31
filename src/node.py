@@ -2,15 +2,17 @@ from interface import interface
 from utils import attribute, outcome
 from pathlib import Path
 
-LIBRARIES = ['Database.sol', 'Utils.sol', 'GeneDrugLib.sol', 'Math.sol']
-CONTRACT = 'test.sol'
+LIBRARIES = ['./contract/Database.sol', './contract/Utils.sol',
+             './contract/GeneDrugLib.sol', './contract/Math.sol', './contract/StatLib.sol']
+CONTRACT = './contract/baseline2.sol'
 INSERTION = ""
 
 
 class Node:
     def __init__(self, libraries=LIBRARIES, contract=CONTRACT, **kwargs):
         self.interface = interface(**kwargs)
-        self.interface.deploy_libraries(libraries)
+        self.interface.deploy_libraries(
+            libraries, ["contract=/home/mark/remix/contract"])
         self.interface.publish(CONTRACT, Path(CONTRACT).stem)
         # self.contract = self.interface(tx_receipt, contract_interface)
 

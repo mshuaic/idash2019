@@ -1,0 +1,7 @@
+{
+    "./contract/Database.sol:Database": "0xF2E246BB76DF876Cef8b38ae84130F4F55De395b",
+    "./contract/GeneDrugLib.sol:GeneDrugLib": "0x2946259E0334f33A064106302415aD3391BeD384",
+    "./contract/Math.sol:Math": "0xDe09E74d4888Bc4e65F589e8c13Bce9F71DdF4c7",
+    "./contract/StatLib.sol:StatLib": "0x51a240271AB8AB9f9a21C82d9a85396b704E164d",
+    "./contract/Utils.sol:Utils": "0xB9816fC57977D5A786E654c7CF76767be63b966e"
+}

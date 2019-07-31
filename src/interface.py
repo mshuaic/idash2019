@@ -6,12 +6,21 @@ from hexbytes import HexBytes
 import os
 from utils import attribute, outcome
 from logger import log
+import logging
+from eth_tester import PyEVMBackend, EthereumTester
+# log.setLevel(logging.DEBUG)
 
 
 class interface:
     def __init__(self, ipcfile=None, blocking=True):
         if ipcfile is None:
-            self.web3 = Web3(EthereumTesterProvider())
+            genesis_overrides = {'gas_limit': int(1e10), 'difficulty': 1}
+            custom_genesis_params = PyEVMBackend._generate_genesis_params(
+                overrides=genesis_overrides)
+            pyevm_backend = PyEVMBackend(
+                genesis_parameters=custom_genesis_params)
+            t = EthereumTester(backend=pyevm_backend)
+            self.web3 = Web3(EthereumTesterProvider(t))
         else:
             self.web3 = Web3(Web3.IPCProvider(ipcfile))
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
@@ -19,8 +28,9 @@ class interface:
         self.contract_interface = None
         self.blocking = blocking
 
-    def deploy_libraries(self, libraries):
-        compiled_libraries = compile_files(libraries)
+    def deploy_libraries(self, libraries, remappings=None):
+        compiled_libraries = compile_files(
+            libraries, import_remappings=remappings)
         for name, compiled_library in compiled_libraries.items():
             deployment = self.web3.eth.contract(
                 abi=compiled_library['abi'], bytecode=compiled_library['bin'])
@@ -38,6 +48,7 @@ class interface:
                   "%s": {
                     "urls": ["%s"]}},
                 "settings": {
+                    "remappings": [ ],
                     "libraries": {
                     },
                   "evmVersion": "petersburg",
@@ -54,6 +65,10 @@ class interface:
         tmp = json.loads(tmp)
         for lib, add in self.libraries.items():
             filename, libname = lib.split(':')
+            # log.debug(Path(filename).resolve())
+            tmp['settings']['remappings'].append(
+                f"{Path(filename).name}={Path(filename).resolve()}")
+            log.debug(tmp)
             tmp['settings']['libraries'][filename] = {libname: add}
         return tmp
 
@@ -62,7 +77,8 @@ class interface:
         tmp = self.load_lib_add()
         tmp['sources'] = {path.name: {"urls": [str(path)]}}
         sc = tmp
-        compiled_sol = compile_standard(sc, allow_paths=path.parent)
+        log.debug(str(path.parent))
+        compiled_sol = compile_standard(sc, allow_paths=str(path.parent))
         contract_interface = compiled_sol['contracts'][path.name][name]
         w3 = self.web3
         w3.eth.defaultAccount = w3.eth.accounts[0]

@@ -5,6 +5,7 @@ from utils import *
 from logger import log
 from tqdm import tqdm
 import logging
+import pytest
 # log.setLevel(logging.DEBUG)
 # log.setLevel(logging.ERROR)
 
@@ -20,7 +21,7 @@ def convert_remix_input(line):
         else:
             remix.append(str(item).lower())
 
-    print(','.join(remix))
+    return ','.join(remix)
 
 
 def load_data(size=1):
@@ -94,6 +95,7 @@ def test_compare_single():
     records = load_data(size=1)
 
     for record in tqdm(records):
+        convert_remix_input(record)
         bc.insert(*record)
         db.insert(*record)
 
@@ -102,13 +104,14 @@ def test_compare_single():
     assert bc.query(*sql) == db.query(*sql)
 
 
-def test_compare_all():
+def test_compare_all(size):
     bc = Blockchain(blocking=False)
     db = LocalDB()
 
-    records = load_data(size=None)
+    records = load_data(size)
 
     for record in tqdm(records):
+        log.debug(convert_remix_input(record))
         bc.insert(*record)
         db.insert(*record)
 
@@ -117,7 +120,7 @@ def test_compare_all():
     for key in tqdm(db.getKeys()):
         pks = possibleKeys(key)
         for pk in pks:
-            log.debug(pk)
+            log.debug(convert_remix_input(pk))
             assert bc.query(*pk) == db.query(*pk)
 
 
