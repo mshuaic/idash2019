@@ -14,7 +14,7 @@ from eth_tester import PyEVMBackend, EthereumTester
 class interface:
     def __init__(self, ipcfile=None, blocking=True):
         if ipcfile is None:
-            genesis_overrides = {'gas_limit': int(1e10), 'difficulty': 1}
+            genesis_overrides = {'gas_limit': int(1e15), 'difficulty': 1}
             custom_genesis_params = PyEVMBackend._generate_genesis_params(
                 overrides=genesis_overrides)
             pyevm_backend = PyEVMBackend(
@@ -142,40 +142,3 @@ def clean_logs(log_output):
             cleaned_events[key] = value
     print(f"Indexed Events: {cleaned_events}")
     return cleaned_events
-
-
-def test_main():
-    n = interface()
-    libraries = ['Database.sol', 'Utils.sol', 'GeneDrugLib.sol', 'Math.sol']
-    n.deploy_libraries(libraries)
-
-    r, i = n.publish('test.sol', 'test')
-
-    # contract = n.contract(r, i)
-
-    data_file = '../sample/data0.txt'
-    with open(data_file, 'r') as f:
-        buff = f.readlines()
-
-    line = buff[0].strip('\n')
-    line = line.split('\t')
-
-    record = [attribute()._type()[i](line[i]) for i in range(len(line))]
-    # print(record)
-    for r in record:
-        if type(r) is str:
-            print(f'"{r}"', end=", ", sep=', ')
-        elif type(r) is bool:
-            print(str(r).lower(), end=", ", sep=', ')
-        else:
-            print(r, end=", ", sep=', ')
-    print("\n")
-
-    n.send("insertObservation", *record)
-    print(n.retrieve("query", "CETP", "*", "*"))
-    # tx_hash = contract.functions.insertObservation(*record).transact()
-    # n.web3.eth.waitForTransactionReceipt(tx_hash)
-    # print(contract.functions.query("CETP", "*", "*").call())
-
-
-# test()

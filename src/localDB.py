@@ -88,4 +88,19 @@ def div(a, b):
     if a / b == 0:
         return "0"
     return str(math.trunc(a/b)) + '.' + str(a*(10**precision)//b)[-precision:]
-    # return "%.6d" % (a / b)
+
+    # return "%.06f" % round(a/b, 6)
+
+    # return roundup(a * 10**precision // 2, 10**precision)
+
+
+def myround(n):
+
+    # Smaller multiple
+    a = (n // 10) * 10
+
+    # Larger multiple
+    b = a + 10
+
+    # Return of closest of two
+    return (b if n - a > b - n else a)

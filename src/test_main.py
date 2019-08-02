@@ -6,11 +6,14 @@ from logger import log
 from tqdm import tqdm
 import logging
 import pytest
+import time
+import json
 # log.setLevel(logging.DEBUG)
 # log.setLevel(logging.ERROR)
 
-data_dir = '/home/mark/sample'
+data_dir = '/home/mark/idash2019/data'
 sql = ["*", "42", "*"]
+TRANSACTION_GAS = 21000
 
 
 def convert_remix_input(line):
@@ -55,34 +58,6 @@ def possibleKeys(key):
     return result[1:]
 
 
-# print(possibleKeys(["a", "b", "c"]))
-
-
-def test_blockchain():
-    bc = Blockchain()
-    record = load_data()
-    bc.insert(*record)
-    print(bc.query("CETP", "*", "*"))
-
-
-def test_bc_insertion():
-    bc = Blockchain(blocking=False)
-    # bc.setBlocking(False)
-    records = load_data(1)
-    for record in records:
-        convert_remix_input(record)
-        # input()
-        bc.insert(*record)
-    print(bc.query(*sql))
-
-
-def test_localDB():
-    db = LocalDB()
-    record = load_data()
-    db.insert(*record)
-    print(db.query("CETP", "*", "*"))
-
-
 def test_div():
     assert div(1, 2) == "0.500000"
     assert div(35, 3) == "11.666666"
@@ -105,23 +80,45 @@ def test_compare_single():
 
 
 def test_compare_all(size):
-    bc = Blockchain(blocking=False)
+    bc = Blockchain(blocking=True)
     db = LocalDB()
 
     records = load_data(size)
 
+    start = time.time()
+    totalGas = 0
     for record in tqdm(records):
         log.debug(convert_remix_input(record))
-        bc.insert(*record)
+        r = bc.insert(*record)
+        totalGas += (r['gasUsed'] - TRANSACTION_GAS)
+        # print(r['gasUsed'])
         db.insert(*record)
+    insertion_time = (time.time() - start)
 
     assert bc.query("*", "*", "*") == db.query("*", "*", "*")
 
+    query_count = 0
+    start = time.time()
     for key in tqdm(db.getKeys()):
         pks = possibleKeys(key)
         for pk in pks:
             log.debug(convert_remix_input(pk))
             assert bc.query(*pk) == db.query(*pk)
+            query_count += 1
+    query_time = time.time() - start
+
+    result = {
+        "data size": len(records),
+        'total insert time': insertion_time,
+        "insert time per record": insertion_time // len(records),
+        "total storage used (in gas)": totalGas,
+        "storage per record": totalGas // len(records),
+        "total query time": query_time,
+        "query time per record": query_time // query_count
+    }
+
+    with open("benchmark.json", 'w') as outfile:
+        json.dump(result, outfile)
 
 
 def test_localDB_getKeys():

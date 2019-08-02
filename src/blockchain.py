@@ -7,8 +7,8 @@ class Blockchain(Database):
         self.proxy = Node(**kwargs)
 
     def insert(self, geneName: str, variantNumber: int, drugName: str, outcome: str, relation: bool, sideEffect: bool):
-        self.proxy.insert(geneName, variantNumber, drugName,
-                          outcome, relation, sideEffect)
+        return self.proxy.insert(geneName, variantNumber, drugName,
+                                 outcome, relation, sideEffect)
 
     def query(self, geneName: str, variantNumber: str, drugName: str) -> str:
         return self.proxy.query(geneName, variantNumber, drugName)

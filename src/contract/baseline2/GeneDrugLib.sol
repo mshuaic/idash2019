@@ -23,6 +23,7 @@ library GeneDrugLib{
         bool suspectedRelation;
         bool seriousSideEffect;
     }
+
     
     struct Trial{
         mapping (bytes => Outcome[]) trial;
