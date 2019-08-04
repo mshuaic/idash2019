@@ -8,7 +8,6 @@ LIBRARIES = ['Database.sol', 'Utils.sol',
              'GeneDrugLib.sol', 'Math.sol', 'StatLib.sol']
 CONTRACT = f"{BASELINE}.sol"
 CONTRACT_DIR = f"./contract/{BASELINE}"
-print(CONTRACT)
 LIBRARIES = list(
     map(lambda x: str(Path(CONTRACT_DIR).joinpath(x).resolve()), LIBRARIES))
 
