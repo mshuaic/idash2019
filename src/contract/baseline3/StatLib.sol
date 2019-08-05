@@ -34,7 +34,7 @@ library StatLib {
         Stat memory stat = Stat(s.geneName, s.variantNumber,s.drugName, s.totalCount+1,s.improvedCount,s.unchangedCount,s.deterioratedCount,s.suspectedRelationCount,s.sideEffectCount);
         return stat;
     }
-
+    
     function buildRelation(string memory geneName,
                            uint variantNumber,
                            string memory drugName,

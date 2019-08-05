@@ -107,18 +107,18 @@ def test_compare_all(size):
             query_count += 1
     query_time = time.time() - start
 
-    result = {
-        "data size": len(records),
-        'total insert time': insertion_time,
-        "insert time per record": insertion_time // len(records),
-        "total storage used (in gas)": totalGas,
-        "storage per record": totalGas // len(records),
-        "total query time": query_time,
-        "query time per record": query_time // query_count
-    }
+    # result = {
+    #     "data size": len(records),
+    #     'total insert time': insertion_time,
+    #     "insert time per record": insertion_time // len(records),
+    #     "total storage used (in gas)": totalGas,
+    #     "storage per record": totalGas // len(records),
+    #     "total query time": query_time,
+    #     "query time per record": query_time // query_count
+    # }
 
-    with open("benchmark.json", 'w') as outfile:
-        json.dump(result, outfile)
+    # with open("benchmark.json", 'w') as outfile:
+    #     json.dump(result, outfile)
 
 
 def test_localDB_getKeys():

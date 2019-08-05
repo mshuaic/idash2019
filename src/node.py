@@ -3,7 +3,7 @@ from utils import attribute, outcome
 from pathlib import Path
 
 
-BASELINE = 'baseline2'
+BASELINE = 'baseline3'
 LIBRARIES = ['Database.sol', 'Utils.sol',
              'GeneDrugLib.sol', 'Math.sol', 'StatLib.sol']
 CONTRACT = f"{BASELINE}.sol"
