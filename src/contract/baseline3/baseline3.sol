@@ -55,10 +55,10 @@ contract baseline3 {
                                 bool seriousSideEffect
                                 ) public {
 	
-        bytes32 key = keccak256(abi.encodePacked(geneName, variantNumber, drugName));
         // statStorage index starts from 1
         uint index = numRelations+1;
 	string memory variantNumber_str = Utils.uintToStr(variantNumber);
+	bytes32 key = encodeKey(geneName, variantNumber_str, drugName);
 
 	if (entryExists(geneName,variantNumber_str,drugName) == false) {
 	    GeneDrugRelation memory r = buildRelation(geneName,variantNumber,drugName, outcome, suspectedRelation, seriousSideEffect);
@@ -67,12 +67,12 @@ contract baseline3 {
 	    for (uint i=0;i<8;i++){
 		relations[keys[i]].push(index);
 	    }
+	    
 	    numRelations++;
 	} else {
 	    index = relations[key][0];
             statStorage[index] = updateRelation(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
 	}
-	
 	
         numObservations++;
         numObservationsFromSenders[msg.sender]++;
@@ -109,7 +109,7 @@ contract baseline3 {
 			    string memory outcome, 
 			    bool suspectedRelation,
 			    bool seriousSideEffect) private pure returns(GeneDrugRelation memory){
-	    old.totalCount += 1;
+	old.totalCount += 1;
     	old.improvedCount += Utils.equals(outcome, "IMPROVED") ? 1 : 0;
         old.unchangedCount += Utils.equals(outcome, "UNCHANGED") ? 1 : 0;
         old.deterioratedCount += Utils.equals(outcome, "DETERIORATED") ? 1 : 0;

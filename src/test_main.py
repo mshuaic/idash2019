@@ -11,7 +11,7 @@ import json
 # log.setLevel(logging.DEBUG)
 # log.setLevel(logging.ERROR)
 
-data_dir = '/home/mark/idash2019/data'
+data_dir = '/home/mark/idash2019/sample/test'
 sql = ["*", "42", "*"]
 TRANSACTION_GAS = 21000
 
