@@ -9,7 +9,7 @@ from utils import *
 import sys
 from localDB import LocalDB
 
-BASELINE = 'baseline2'
+BASELINE = 'baseline3'
 LIBRARIES = ['Database.sol', 'Utils.sol',
              'GeneDrugLib.sol', 'Math.sol', 'StatLib.sol']
 CONTRACT = f"{BASELINE}.sol"
@@ -19,7 +19,7 @@ LIBRARIES = list(
 
 CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 
-DATA_DIR = '/home/mark/idash2019/data'
+DATA_DIR = '/home/mark/idash2019/sample/test'
 TRANSACTION_GAS = 21000
 
 BENCHMARK_FILE = 'benchmarks.json'

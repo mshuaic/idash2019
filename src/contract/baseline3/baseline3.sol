@@ -1,17 +1,11 @@
 pragma solidity ^0.5.9;
 pragma experimental ABIEncoderV2;
 
-import "./Database.sol";
-import "./GeneDrugLib.sol";
 import "./Utils.sol";
 import "./Math.sol";
-import "./StatLib.sol";
 
 contract baseline3 {
-    using Database for Database.Table;
-    uint8 internal constant ATTRIBUTES_NUM = 3; 
-    Database.Table[ATTRIBUTES_NUM] tables;
-    /* GeneDrugLib.GeneDrug[] data; */
+
     
     uint numObservations;
     uint numRelations;
@@ -71,7 +65,7 @@ contract baseline3 {
 	    numRelations++;
 	} else {
 	    index = relations[key][0];
-            statStorage[index] = updateRelation(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
+            updateRelation(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
 	}
 	
         numObservations++;
@@ -105,22 +99,31 @@ contract baseline3 {
 	}	
     }
 
-    function updateRelation(GeneDrugRelation memory old,
+    function updateRelation(GeneDrugRelation storage old,
 			    string memory outcome, 
 			    bool suspectedRelation,
-			    bool seriousSideEffect) private pure returns(GeneDrugRelation memory){
+			    bool seriousSideEffect) private{
 	old.totalCount += 1;
-    	old.improvedCount += Utils.equals(outcome, "IMPROVED") ? 1 : 0;
-        old.unchangedCount += Utils.equals(outcome, "UNCHANGED") ? 1 : 0;
-        old.deterioratedCount += Utils.equals(outcome, "DETERIORATED") ? 1 : 0;
-        old.suspectedRelationCount += suspectedRelation ? 1 : 0;
-        old.sideEffectCount += seriousSideEffect ? 1 : 0;
-	return GeneDrugRelation(old.geneName, old.variantNumber, old.drugName, old.totalCount,
-                                old.improvedCount, Math.div(old.improvedCount, old.totalCount),
-                                old.unchangedCount, Math.div(old.unchangedCount, old.totalCount),
-                                old.deterioratedCount, Math.div(old.deterioratedCount, old.totalCount),
-                                old.suspectedRelationCount, Math.div(old.suspectedRelationCount, old.totalCount),
-                                old.sideEffectCount, Math.div(old.sideEffectCount, old.totalCount));
+	if (Utils.equals(outcome, "IMPROVED")){
+	    old.improvedCount += 1;
+	    old.improvedPercent = Math.div(old.improvedCount, old.totalCount);
+	} else if (Utils.equals(outcome, "UNCHANGED")) {
+	    old.unchangedCount += 1;
+	    old.unchangedPercent = Math.div(old.unchangedCount, old.totalCount);
+	} else {
+	    old.deterioratedCount += 1;
+	    old.deterioratedPercent = Math.div(old.deterioratedCount, old.totalCount);
+	}
+
+	if (suspectedRelation) {
+	    old.suspectedRelationCount += 1;
+	    old.suspectedRelationPercent = Math.div(old.suspectedRelationCount, old.totalCount);
+	}
+	if (seriousSideEffect) {
+	    old.sideEffectCount += 1;
+	    old.sideEffectPercent = Math.div(old.sideEffectCount, old.totalCount);
+	}
+				
     }
 
     
