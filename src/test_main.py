@@ -8,12 +8,25 @@ import logging
 import pytest
 import time
 import json
+from pathlib import Path
 # log.setLevel(logging.DEBUG)
 # log.setLevel(logging.ERROR)
 
 data_dir = '/home/mark/idash2019/sample/test'
 sql = ["*", "42", "*"]
 TRANSACTION_GAS = 21000
+
+BASELINE = 'baseline3'
+LIBRARIES = ['Database.sol', 'Utils.sol',
+             'GeneDrugLib.sol', 'Math.sol', 'StatLib.sol']
+CONTRACT = f"{BASELINE}.sol"
+CONTRACT_DIR = f"./contract/{BASELINE}"
+LIBRARIES = list(
+    map(lambda x: str(Path(CONTRACT_DIR).joinpath(x).resolve()), LIBRARIES))
+
+CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
+
+bc = Blockchain(blocking=True, libraries=LIBRARIES, contract=CONTRACT)
 
 
 def convert_remix_input(line):
@@ -64,7 +77,7 @@ def test_div():
 
 
 def test_compare_single():
-    bc = Blockchain(blocking=False)
+    # bc = Blockchain(blocking=False)
     db = LocalDB()
 
     records = load_data(size=1)
@@ -80,7 +93,7 @@ def test_compare_single():
 
 
 def test_compare_all(size):
-    bc = Blockchain(blocking=True)
+    # bc = Blockchain(blocking=True)
     db = LocalDB()
 
     records = load_data(size)

@@ -2,8 +2,6 @@ from web3 import Web3, EthereumTesterProvider
 from solcx import compile_standard, compile_files
 from pathlib import Path
 import json
-from hexbytes import HexBytes
-import os
 from utils import attribute, outcome
 from logger import log
 import logging
