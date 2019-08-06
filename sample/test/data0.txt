@@ -1,0 +1,6 @@
+CETP	31	acenocoumarol	DETERIORATED	true	false
+CETP	31	acenocoumarol	DETERIORATED	true	false
+CETP	31	acenocoumarol	DETERIORATED	true	false
+CETP	31	acenocoumarol	DETERIORATED	true	false
+CETP	31	acenocoumarol	DETERIORATED	true	false
+

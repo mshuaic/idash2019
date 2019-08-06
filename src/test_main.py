@@ -12,7 +12,7 @@ from pathlib import Path
 # log.setLevel(logging.DEBUG)
 # log.setLevel(logging.ERROR)
 
-data_dir = '/home/mark/idash2019/sample/test'
+data_dir = '/home/mark/idash2019/data'
 sql = ["*", "42", "*"]
 TRANSACTION_GAS = 21000
 
@@ -102,6 +102,8 @@ def test_compare_all(size):
     totalGas = 0
     for record in tqdm(records):
         log.debug(convert_remix_input(record))
+        with open("insertion.log", 'a') as f:
+            f.write("%s\n" % convert_remix_input(record))
         r = bc.insert(*record)
         totalGas += (r['gasUsed'] - TRANSACTION_GAS)
         # print(r['gasUsed'])

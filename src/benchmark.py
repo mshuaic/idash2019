@@ -61,6 +61,17 @@ def toFile(fp, baseline, result, append=True):
     dic[baseline] = result
 
 
+def convert_remix_input(line):
+    remix = []
+    for item in line:
+        if type(item) == str:
+            remix.append(f"\"{item}\"")
+        else:
+            remix.append(str(item).lower())
+
+    return ','.join(remix)
+
+
 def main():
     size = 0
     if len(sys.argv) <= 1:
@@ -74,6 +85,8 @@ def main():
     insertion_time = 0
     totalGas = 0
     for record in tqdm(records):
+        with open("insertion.log", 'a') as f:
+            f.write("%s\n" % convert_remix_input(record))
         start = time.time()
         r = bc.insert(*record)
         insertion_time += (time.time() - start)
