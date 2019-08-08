@@ -12,13 +12,12 @@ from pathlib import Path
 # log.setLevel(logging.DEBUG)
 # log.setLevel(logging.ERROR)
 
-data_dir = '/home/mark/idash2019/data'
+data_dir = '/home/mark/idash2019/sample'
 sql = ["*", "42", "*"]
 TRANSACTION_GAS = 21000
 
-BASELINE = 'baseline3'
-LIBRARIES = ['Database.sol', 'Utils.sol',
-             'GeneDrugLib.sol', 'Math.sol', 'StatLib.sol']
+BASELINE = 'baseline4'
+LIBRARIES = ['Utils.sol', 'Math.sol']
 CONTRACT = f"{BASELINE}.sol"
 CONTRACT_DIR = f"./contract/{BASELINE}"
 LIBRARIES = list(

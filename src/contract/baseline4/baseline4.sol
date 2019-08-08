@@ -4,13 +4,13 @@ pragma experimental ABIEncoderV2;
 import "./Utils.sol";
 import "./Math.sol";
 
-contract baseline3 {
+contract baseline4 {
 
     
     uint numObservations;
     uint numRelations;
     mapping (address => uint) numObservationsFromSenders;
-    mapping (bytes32 => mapping(bytes32 => StatIndex)) relations;
+    mapping (bytes32 => StatIndex) relations;
     // GeneDrugRelation[] statStorage;
 
     
@@ -40,10 +40,6 @@ contract baseline3 {
 	GeneDrugRelation[] data;
     }
     
-    constructor() public{
-        GeneDrugRelation memory EMPTY = GeneDrugRelation("",0,"",0,0,"",0,"",0,"",0,"",0,"");
-        statStorage.push(EMPTY); // make index starts from 1   
-    }
     
     function insertObservation (
                                 string memory geneName,
@@ -63,15 +59,15 @@ contract baseline3 {
 	    GeneDrugRelation memory r = buildRelation(geneName,variantNumber,drugName, outcome, suspectedRelation, seriousSideEffect);
 	    bytes32[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
 	    for (uint i=0;i<8;i++){
-		relations[keys[i]].data.push(r)
-		relations[keys[i]].index[keys[i]] = relations[keys[i]].data.length-1 ;
+		relations[keys[i]].data.push(r);
+		relations[keys[i]].index[keys[i]] = relations[keys[i]].data.length-1;
 	    }
 	    numRelations++;
 	} else {
 	    bytes32[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
 	    for (uint i=0;i<8;i++){
 		uint index = relations[keys[i]].index[key];
-		updateRelation(relations[keys[i]].data[indx], outcome,suspectedRelation,seriousSideEffect);
+		updateRelation(relations[keys[i]].data[index], outcome,suspectedRelation,seriousSideEffect);
 	    }
 	}
 	

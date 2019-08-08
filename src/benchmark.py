@@ -9,7 +9,7 @@ from utils import *
 import sys
 from localDB import LocalDB
 
-BASELINE = 'baseline3'
+BASELINE = 'baseline4'
 LIBRARIES = ['Database.sol', 'Utils.sol',
              'GeneDrugLib.sol', 'Math.sol', 'StatLib.sol']
 CONTRACT = f"{BASELINE}.sol"
