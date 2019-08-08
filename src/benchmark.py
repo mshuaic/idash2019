@@ -19,7 +19,7 @@ LIBRARIES = list(
 
 CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 
-DATA_DIR = '/home/mark/idash2019/sample/test'
+DATA_DIR = '/home/mark/idash2019/data/'
 TRANSACTION_GAS = 21000
 
 BENCHMARK_FILE = 'benchmarks.json'
