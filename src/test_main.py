@@ -12,7 +12,7 @@ from pathlib import Path
 # log.setLevel(logging.DEBUG)
 # log.setLevel(logging.ERROR)
 
-data_dir = '/home/mark/idash2019/sample'
+data_dir = '/home/mark/idash2019/data'
 sql = ["*", "42", "*"]
 TRANSACTION_GAS = 21000
 

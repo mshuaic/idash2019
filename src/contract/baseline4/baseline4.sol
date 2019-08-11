@@ -53,20 +53,20 @@ contract baseline4 {
         // statStorage index starts from 1
         // uint index = numRelations+1;
 	string memory variantNumber_str = Utils.uintToStr(variantNumber);
-	bytes32 key = encodeKey(geneName, variantNumber_str, drugName);
+	bytes32 relationKey = encodeKey(geneName, variantNumber_str, drugName);
 
 	if (entryExists(geneName,variantNumber_str,drugName) == false) {
 	    GeneDrugRelation memory r = buildRelation(geneName,variantNumber,drugName, outcome, suspectedRelation, seriousSideEffect);
 	    bytes32[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
 	    for (uint i=0;i<8;i++){
 		relations[keys[i]].data.push(r);
-		relations[keys[i]].index[keys[i]] = relations[keys[i]].data.length-1;
+		relations[keys[i]].index[relationKey] = relations[keys[i]].data.length-1;
 	    }
 	    numRelations++;
 	} else {
 	    bytes32[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
 	    for (uint i=0;i<8;i++){
-		uint index = relations[keys[i]].index[key];
+		uint index = relations[keys[i]].index[relationKey];
 		updateRelation(relations[keys[i]].data[index], outcome,suspectedRelation,seriousSideEffect);
 	    }
 	}

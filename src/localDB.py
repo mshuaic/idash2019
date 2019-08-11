@@ -38,11 +38,10 @@ class LocalDB(Database):
         for ob in observations:
             relation = Relation(ob.geneName, ob.variantNumber, ob.drugName)
             outcome = Outcome(ob.outcome, ob.relation, ob.sideEffect)
-            relations.setdefault(relation, [])
-            relations[relation].append(outcome)
+            relations.setdefault(relation, []).append(outcome)
+            # relations[relation].append(outcome)
 
         return self._get_stat(relations)
-
         # return list(result.itertuples(index=False, name=False))
 
     def _get_stat(self, relations):
