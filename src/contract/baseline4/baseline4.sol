@@ -10,7 +10,7 @@ contract baseline4 {
     uint numObservations;
     uint numRelations;
     mapping (address => uint) numObservationsFromSenders;
-    mapping (bytes32 => StatIndex) relations;
+    mapping (bytes => StatIndex) relations;
     // GeneDrugRelation[] statStorage;
 
     
@@ -36,7 +36,7 @@ contract baseline4 {
     }
 
     struct StatIndex {
-	mapping (bytes32 => uint) index;
+	mapping (bytes => uint) index;
 	GeneDrugRelation[] data;
     }
     
@@ -53,18 +53,18 @@ contract baseline4 {
         // statStorage index starts from 1
         // uint index = numRelations+1;
 	string memory variantNumber_str = Utils.uintToStr(variantNumber);
-	bytes32 relationKey = encodeKey(geneName, variantNumber_str, drugName);
+	bytes memory relationKey = encodeKey(geneName, variantNumber_str, drugName);
 
 	if (entryExists(geneName,variantNumber_str,drugName) == false) {
 	    GeneDrugRelation memory r = buildRelation(geneName,variantNumber,drugName, outcome, suspectedRelation, seriousSideEffect);
-	    bytes32[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
+	    bytes[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
 	    for (uint i=0;i<8;i++){
 		relations[keys[i]].data.push(r);
 		relations[keys[i]].index[relationKey] = relations[keys[i]].data.length-1;
 	    }
 	    numRelations++;
 	} else {
-	    bytes32[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
+	    bytes[8] memory keys = possibeKeys(geneName, variantNumber_str, drugName);
 	    for (uint i=0;i<8;i++){
 		uint index = relations[keys[i]].index[relationKey];
 		updateRelation(relations[keys[i]].data[index], outcome,suspectedRelation,seriousSideEffect);
@@ -131,7 +131,7 @@ contract baseline4 {
 
     
     function possibeKeys(string memory geneName, string memory variantNumber, string memory drugName)
-	private pure returns(bytes32[8] memory){
+	private pure returns(bytes[8] memory){
 	return [encodeKey("*","*",drugName), encodeKey("*",variantNumber,"*"),
 		encodeKey("*",variantNumber,drugName), encodeKey(geneName,"*","*"),
 		encodeKey(geneName,"*",drugName), encodeKey(geneName,variantNumber,"*"),
@@ -139,8 +139,8 @@ contract baseline4 {
     }
 
     function encodeKey(string memory geneName, string memory variantNumber, string memory drugName)
-	private pure returns(bytes32) {
-	return keccak256(abi.encodePacked(geneName,variantNumber,drugName));
+	private pure returns(bytes memory) {
+	return abi.encodePacked(geneName,variantNumber,drugName);
     }    
    
     function query(
@@ -156,7 +156,7 @@ contract baseline4 {
                          string memory variantNumber,
                          string memory drugName
                          ) public view returns (bool){
-	bytes32 key = encodeKey(geneName, variantNumber, drugName);
+	bytes memory key = encodeKey(geneName, variantNumber, drugName);
 	return relations[key].data.length != 0;
     }
 
