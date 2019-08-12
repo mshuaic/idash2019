@@ -99,7 +99,7 @@ contract baseline4 {
 	    return(GeneDrugRelation(geneName, variantNumber, drugName, 1, 0, "0",
 				    0,"0",1,"1.000000",suspectedRelationCount,suspectedRelationPercent,
 				    sideEffectCount,sideEffectPercent));
-	}	
+ 	}	
     }
 
     function updateRelation(GeneDrugRelation storage old,
@@ -109,23 +109,22 @@ contract baseline4 {
 	old.totalCount += 1;
 	if (Utils.equals(outcome, "IMPROVED")){
 	    old.improvedCount += 1;
-	    old.improvedPercent = Math.div(old.improvedCount, old.totalCount);
 	} else if (Utils.equals(outcome, "UNCHANGED")) {
 	    old.unchangedCount += 1;
-	    old.unchangedPercent = Math.div(old.unchangedCount, old.totalCount);
 	} else {
 	    old.deterioratedCount += 1;
-	    old.deterioratedPercent = Math.div(old.deterioratedCount, old.totalCount);
 	}
-
+	old.improvedPercent = Math.div(old.improvedCount, old.totalCount);
+	old.unchangedPercent = Math.div(old.unchangedCount, old.totalCount);
+	old.deterioratedPercent = Math.div(old.deterioratedCount, old.totalCount);
 	if (suspectedRelation) {
 	    old.suspectedRelationCount += 1;
-	    old.suspectedRelationPercent = Math.div(old.suspectedRelationCount, old.totalCount);
 	}
+	old.suspectedRelationPercent = Math.div(old.suspectedRelationCount, old.totalCount);
 	if (seriousSideEffect) {
 	    old.sideEffectCount += 1;
-	    old.sideEffectPercent = Math.div(old.sideEffectCount, old.totalCount);
 	}
+	old.sideEffectPercent = Math.div(old.sideEffectCount, old.totalCount);
 				
     }
 
