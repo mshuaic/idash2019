@@ -16,7 +16,7 @@ data_dir = '/home/mark/idash2019/data'
 sql = ["*", "42", "*"]
 TRANSACTION_GAS = 21000
 
-BASELINE = 'baseline4'
+BASELINE = 'baseline3'
 LIBRARIES = ['Utils.sol', 'Math.sol']
 CONTRACT = f"{BASELINE}.sol"
 CONTRACT_DIR = f"./contract/{BASELINE}"
@@ -25,7 +25,8 @@ LIBRARIES = list(
 
 CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 
-bc = Blockchain(blocking=True, libraries=LIBRARIES, contract=CONTRACT)
+bc = Blockchain(blocking=True, libraries=LIBRARIES,
+                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc', timeout=120)
 
 
 def convert_remix_input(line):

@@ -10,7 +10,7 @@ from eth_tester import PyEVMBackend, EthereumTester
 
 
 class interface:
-    def __init__(self, ipcfile=None, blocking=True):
+    def __init__(self, ipcfile=None, blocking=True, **kwargs):
         if ipcfile is None:
             genesis_overrides = {'gas_limit': int(1e15), 'difficulty': 1}
             custom_genesis_params = PyEVMBackend._generate_genesis_params(
@@ -20,7 +20,7 @@ class interface:
             t = EthereumTester(backend=pyevm_backend)
             self.web3 = Web3(EthereumTesterProvider(t))
         else:
-            self.web3 = Web3(Web3.IPCProvider(ipcfile))
+            self.web3 = Web3(Web3.IPCProvider(ipcfile, **kwargs))
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
         self.libraries = {}
         self.contract_interface = None
@@ -49,7 +49,7 @@ class interface:
                     "remappings": [ ],
                     "libraries": {
                     },
-                  "evmVersion": "petersburg",
+                  "evmVersion": "byzantium",
                   "outputSelection": {
                      "*": {
                                    "*": [
