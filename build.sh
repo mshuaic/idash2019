@@ -21,7 +21,7 @@ datadir=$DATA_FOLDER/${dir_prefix}0
 mkdir -p $datadir/keystore
 cp ${files[$i]} $datadir/keystore
 geth --datadir $datadir init genesis.json >/dev/null 2>&1
-nohup geth --datadir $datadir --unlock ${addresses[0]} --password <(echo "") --mine --minerthreads=1 --networkid 1 --rpc --rpcaddr '0.0.0.0' --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" >/dev/null 2>&1 & 
+nohup geth --datadir $datadir --unlock ${addresses[0]} --password <(echo "") --mine --minerthreads=8 --miner.gastarget 9999999999999999999 --networkid 1 --rpc --rpcaddr '0.0.0.0' --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" & 
 
 
 # create data folder for each node

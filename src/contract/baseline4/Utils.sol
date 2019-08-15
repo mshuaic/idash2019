@@ -42,7 +42,7 @@ library Utils {
         return result; // this was missing
     }
     
-    // @author Gonçalo Sá <goncalo.sa@consensys.net>
+    /* // @author Gonçalo Sá <goncalo.sa@consensys.net> */
     function equal(bytes memory _preBytes, bytes memory _postBytes) internal pure returns (bool) {
         bool success = true;
 
@@ -85,16 +85,42 @@ library Utils {
         return success;
     }
     
-    function equals(string memory s0, string memory s1) internal pure returns (bool) {
-        bytes memory _s0 = bytes(s0);
-        bytes memory _s1 = bytes(s1);
-        if(_s0.length != _s1.length){
-            return false;
-        }
-        return equal(_s0,_s1);
-        // assembly {
-        //     equal := eq(keccak256(addr, len), keccak256(addr2, len))
-        // }
+    /* function equals(string memory s0, string memory s1) internal pure returns (bool) { */
+    /*     bytes memory _s0 = bytes(s0); */
+    /*     bytes memory _s1 = bytes(s1); */
+    /*     if(_s0.length != _s1.length){ */
+    /*         return false; */
+    /*     } */
+    /*     /\* return equal(_s0,_s1); *\/ */
+    /*     // assembly { */
+    /*     //     equal := eq(keccak256(addr, len), keccak256(addr2, len)) */
+    /*     // } */
+    /* } */
+
+
+    /* function compare(string memory _a, string memory _b) private pure returns (int) { */
+    /*     bytes memory a = bytes(_a); */
+    /*     bytes memory b = bytes(_b); */
+    /*     uint minLength = a.length; */
+    /*     if (b.length < minLength) minLength = b.length; */
+    /*     //@todo unroll the loop into increments of 32 and do full 32 byte comparisons */
+    /*     for (uint i = 0; i < minLength; i ++) */
+    /*         if (a[i] < b[i]) */
+    /*             return -1; */
+    /*         else if (a[i] > b[i]) */
+    /*             return 1; */
+    /*     if (a.length < b.length) */
+    /*         return -1; */
+    /*     else if (a.length > b.length) */
+    /*         return 1; */
+    /*     else */
+    /*         return 0; */
+    /* } */
+    
+    /// @dev Compares two strings and returns true iff they are equal.
+    function equals(string memory a, uint length) internal pure returns (bool) {
+      /* return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b)); */
+      return bytes(a).length == length;
     }
     
     function isStar(string memory str) internal pure returns(bool) {
@@ -172,7 +198,4 @@ library Utils {
         return (result, index);
     }
 
-    function test(uint a) public pure returns(string memory) {
-        return uintToStr(a);
-    }
 }

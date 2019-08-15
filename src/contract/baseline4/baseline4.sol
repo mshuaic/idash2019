@@ -11,8 +11,10 @@ contract baseline4 {
     uint numRelations;
     mapping (address => uint) numObservationsFromSenders;
     mapping (bytes => StatIndex) relations;
-    // GeneDrugRelation[] statStorage;
 
+    uint constant IMPROVED = 8;
+    uint constant UNCHANGED = 9;
+    uint constant DETERIORATED = 12;
     
     // This structure is how the data should be returned from the query function.
     // You do not have to store relations this way in your contract, only return them.
@@ -40,6 +42,8 @@ contract baseline4 {
 	GeneDrugRelation[] data;
     }
     
+
+
     
     function insertObservation (
                                 string memory geneName,
@@ -83,21 +87,21 @@ contract baseline4 {
                            bool suspectedRelation,
                            bool seriousSideEffect) private pure returns(GeneDrugRelation memory){
         uint suspectedRelationCount = suspectedRelation ? 1 : 0;
-	string memory suspectedRelationPercent = suspectedRelation ? "1.000000" : "0";
+	string memory suspectedRelationPercent = suspectedRelation ? "1.000000" : "0.000000";
         uint sideEffectCount = seriousSideEffect ? 1 : 0;
-	string memory sideEffectPercent = seriousSideEffect ? "1.000000" : "0";
+	string memory sideEffectPercent = seriousSideEffect ? "1.000000" : "0.000000";
 	
-	if (Utils.equals(outcome, "IMPROVED")) {
+	if (Utils.equals(outcome, IMPROVED)) {
 	    return(GeneDrugRelation(geneName, variantNumber, drugName, 1, 1, "1.000000",
-				    0,"0",0,"0",suspectedRelationCount,suspectedRelationPercent,
+				    0,"0.000000",0,"0.000000",suspectedRelationCount,suspectedRelationPercent,
 				    sideEffectCount,sideEffectPercent));
-	} else if (Utils.equals(outcome, "UNCHANGED")) {
-	    return(GeneDrugRelation(geneName, variantNumber, drugName, 1, 0, "0",
-				    1,"1.000000",0,"0",suspectedRelationCount,suspectedRelationPercent,
+	} else if (Utils.equals(outcome, UNCHANGED)) {
+	    return(GeneDrugRelation(geneName, variantNumber, drugName, 1, 0, "0.000000",
+				    1,"1.000000",0,"0.000000",suspectedRelationCount,suspectedRelationPercent,
 				    sideEffectCount,sideEffectPercent));
 	} else{
-	    return(GeneDrugRelation(geneName, variantNumber, drugName, 1, 0, "0",
-				    0,"0",1,"1.000000",suspectedRelationCount,suspectedRelationPercent,
+	    return(GeneDrugRelation(geneName, variantNumber, drugName, 1, 0, "0.000000",
+				    0,"0.000000",1,"1.000000",suspectedRelationCount,suspectedRelationPercent,
 				    sideEffectCount,sideEffectPercent));
  	}	
     }
@@ -107,9 +111,9 @@ contract baseline4 {
 			    bool suspectedRelation,
 			    bool seriousSideEffect) private{
 	old.totalCount += 1;
-	if (Utils.equals(outcome, "IMPROVED")){
+	if (Utils.equals(outcome, IMPROVED)){
 	    old.improvedCount += 1;
-	} else if (Utils.equals(outcome, "UNCHANGED")) {
+	} else if (Utils.equals(outcome, UNCHANGED)) {
 	    old.unchangedCount += 1;
 	} else {
 	    old.deterioratedCount += 1;
@@ -127,7 +131,6 @@ contract baseline4 {
 	old.sideEffectPercent = Math.div(old.sideEffectCount, old.totalCount);
 				
     }
-
     
     function possibeKeys(string memory geneName, string memory variantNumber, string memory drugName)
 	private pure returns(bytes[8] memory){

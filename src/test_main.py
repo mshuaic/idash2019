@@ -16,7 +16,7 @@ data_dir = '/home/mark/idash2019/data'
 sql = ["*", "42", "*"]
 TRANSACTION_GAS = 21000
 
-BASELINE = 'baseline3'
+BASELINE = 'baseline4'
 LIBRARIES = ['Utils.sol', 'Math.sol']
 CONTRACT = f"{BASELINE}.sol"
 CONTRACT_DIR = f"./contract/{BASELINE}"
@@ -25,8 +25,13 @@ LIBRARIES = list(
 
 CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 
-bc = Blockchain(blocking=True, libraries=LIBRARIES,
-                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc', timeout=120)
+BLOCKING = False
+
+bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
+                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc')
+
+# bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
+# contract=CONTRACT)
 
 
 def convert_remix_input(line):
@@ -105,10 +110,12 @@ def test_compare_all(size):
         with open("insertion.log", 'a') as f:
             f.write("%s\n" % convert_remix_input(record))
         r = bc.insert(*record)
-        totalGas += (r['gasUsed'] - TRANSACTION_GAS)
+        # totalGas += (r['gasUsed'] - TRANSACTION_GAS)
         # print(r['gasUsed'])
         db.insert(*record)
     insertion_time = (time.time() - start)
+
+    time.sleep(10)
 
     assert bc.query("*", "*", "*") == db.query("*", "*", "*")
 

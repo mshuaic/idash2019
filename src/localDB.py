@@ -85,7 +85,7 @@ class LocalDB(Database):
 def div(a, b):
     precision = 6
     if a / b == 0:
-        return "0"
+        return "0.000000"
     # return str(math.trunc(a/b)) + '.' + str(a*(10**precision)//b)[-precision:]
 
     return "%f" % round(a/b, 6)
