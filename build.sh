@@ -11,6 +11,8 @@ rpcport=8545
 
 mkdir $DATA_FOLDER
 
+bash create_accounts.sh
+
 files=(accounts/keystore/*)
 
 # account addresses
