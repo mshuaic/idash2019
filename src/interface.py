@@ -102,8 +102,8 @@ class interface:
         built_fxn = fxn_to_call(*tx_args)
         tx_hash = built_fxn.transact()
         if not self.blocking:
-            log.debug('not blocking')
-            return None
+            log.debug('not blocking', type(tx_hash))
+            return tx_hash
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         if event is not None:
             event_to_call = getattr(self.contract_instance.events, event)
@@ -125,6 +125,19 @@ class interface:
             return_values = return_values.decode('utf-8').rstrip("\x00")
 
         return return_values
+
+    def wait_all(self, tx_hashs):
+        receipts = []
+        for tx_hash in tx_hashs:
+            receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
+            receipts.append(receipt)
+        return receipts
+
+    def estimateGas(self, function_, *call_args, tx_params=None):
+        fxn_to_call = getattr(self.contract_instance.functions, function_)
+        built_fxn = fxn_to_call(*call_args)
+
+        return built_fxn.estimateGas(transaction=tx_params)
 
 
 def clean_logs(log_output):

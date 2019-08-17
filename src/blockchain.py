@@ -13,5 +13,11 @@ class Blockchain(Database):
     def query(self, geneName: str, variantNumber: str, drugName: str) -> str:
         return self.proxy.query(geneName, variantNumber, drugName)
 
+    def wait_all(self, tx_hashs):
+        return self.proxy.wait_all(tx_hashs)
+
+    def estimateQueryGas(self, geneName: str, variantNumber: str, drugName: str):
+        return self.proxy.estimateGas(geneName, variantNumber, drugName)
+
     def setBlocking(self, value):
         self.proxy.blocking = value

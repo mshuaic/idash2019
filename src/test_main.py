@@ -13,7 +13,7 @@ from pathlib import Path
 # log.setLevel(logging.ERROR)
 
 data_dir = '/home/mark/idash2019/data'
-sql = ["*", "42", "*"]
+# sql = [["*", "*", "*"], ["CYP3A5", "*", ""]]
 TRANSACTION_GAS = 21000
 
 BASELINE = 'baseline4'
@@ -28,7 +28,7 @@ CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 BLOCKING = False
 
 bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
-                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc')
+                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc', timeout=120)
 
 # bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
 # contract=CONTRACT)
@@ -115,7 +115,7 @@ def test_compare_all(size):
         db.insert(*record)
     insertion_time = (time.time() - start)
 
-    time.sleep(10)
+    time.sleep(60)
 
     assert bc.query("*", "*", "*") == db.query("*", "*", "*")
 
