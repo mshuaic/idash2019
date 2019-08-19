@@ -123,7 +123,7 @@ library Utils {
         for (uint i=0;i<lists.length;i++) {
             // when lists[i].length == 0, it is a * list
             if (lists[i].length != 0 && lists[i].length < min) {
-                min == lists[i].length;
+                min = lists[i].length;
                 shortestIndex = i;
             }
         }

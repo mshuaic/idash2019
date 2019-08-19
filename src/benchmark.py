@@ -20,53 +20,6 @@ TRANSACTION_GAS = 21000
 BLOCKING = False
 
 
-def load_contracts(contract_dir, suffix='.sol'):
-    result = []
-    with os.scandir(contract_dir) as it:
-        # print(it)
-        for entry in it:
-            if Path(entry).suffix == suffix:
-                result.append(Path(entry).absolute())
-    return result
-
-
-def load_data(size=None):
-    # data_file = '../sample/data0.txt'
-    files = fileReader(data_dir)
-    data = []
-    for path in files.getFilePathes():
-        with open(path, 'r') as f:
-            data += f.readlines()
-
-    records = []
-    for d in data:
-        line = d.strip('\n')
-        line = line.split('\t')
-        record = [attribute()._type()[i](line[i]) for i in range(len(line))]
-        records.append(record)
-    return records[:size]
-
-
-def possibleKeys(key):
-    result = []
-    size = len(key)
-    for i in range(2**size):
-        tmp = []
-        for j in range(size):
-            if i & (1 << j) == (1 << j):
-                tmp.append(str(key[j]))
-            else:
-                tmp.append("*")
-        result.append(tmp)
-    return result[1:]
-
-
-def timer(fn, *args):
-    start = time.time()
-    fn(*args)
-    return time.time() - start
-
-
 def benchmark(contract, size):
     contract_dir = f"./contract/{contract}"
     contracts = load_contracts(contract_dir)

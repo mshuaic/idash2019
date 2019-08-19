@@ -29,8 +29,8 @@ library StatLib {
         s.improvedCount += Utils.equals(outcome, "IMPROVED") ? 1 : 0;
         s.unchangedCount += Utils.equals(outcome, "UNCHANGED") ? 1 : 0;
         s.deterioratedCount += Utils.equals(outcome, "DETERIORATED") ? 1 : 0;
-        s.suspectedRelationCount = suspectedRelation ? 1 : 0;
-        s.sideEffectCount = seriousSideEffect ? 1 : 0;
+        s.suspectedRelationCount += suspectedRelation ? 1 : 0;
+        s.sideEffectCount += seriousSideEffect ? 1 : 0;
         Stat memory stat = Stat(s.geneName, s.variantNumber,s.drugName, s.totalCount+1,s.improvedCount,s.unchangedCount,s.deterioratedCount,s.suspectedRelationCount,s.sideEffectCount);
         return stat;
     }
