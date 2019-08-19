@@ -1,31 +1,37 @@
-from pathlib import Path
 import time
-from blockchain import Blockchain
-from logger import log
+import os
+from pathlib import Path
 from tqdm import tqdm
-import logging
-import json
 from utils import *
-import sys
+from blockchain import Blockchain
 from localDB import LocalDB
+import json
 
-BASELINE = 'baseline4'
-LIBRARIES = ['Database.sol', 'Utils.sol',
-             'GeneDrugLib.sol', 'Math.sol', 'StatLib.sol']
-CONTRACT = f"{BASELINE}.sol"
-CONTRACT_DIR = f"./contract/{BASELINE}"
-LIBRARIES = list(
-    map(lambda x: str(Path(CONTRACT_DIR).joinpath(x).resolve()), LIBRARIES))
+from logger import log
+import logging
+# log.setLevel(logging.DEBUG)
+# log.setLevel(logging.ERROR)
 
-CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 
-DATA_DIR = '/home/mark/idash2019/data/'
+data_dir = '/home/mark/idash2019/data'
+
 TRANSACTION_GAS = 21000
 
-BENCHMARK_FILE = 'benchmarks.json'
+BLOCKING = False
 
 
-def load_data(data_dir):
+def load_contracts(contract_dir, suffix='.sol'):
+    result = []
+    with os.scandir(contract_dir) as it:
+        # print(it)
+        for entry in it:
+            if Path(entry).suffix == suffix:
+                result.append(Path(entry).absolute())
+    return result
+
+
+def load_data(size=None):
+    # data_file = '../sample/data0.txt'
     files = fileReader(data_dir)
     data = []
     for path in files.getFilePathes():
@@ -38,11 +44,10 @@ def load_data(data_dir):
         line = line.split('\t')
         record = [attribute()._type()[i](line[i]) for i in range(len(line))]
         records.append(record)
-    return records
+    return records[:size]
 
 
 def possibleKeys(key):
-    # not returning (*,*,*)
     result = []
     size = len(key)
     for i in range(2**size):
@@ -56,74 +61,81 @@ def possibleKeys(key):
     return result[1:]
 
 
-def toFile(fp, baseline, result, append=True):
-    dic = josn.load(fp)
-    dic[baseline] = result
+def timer(fn, *args):
+    start = time.time()
+    fn(*args)
+    return time.time() - start
 
 
-def convert_remix_input(line):
-    remix = []
-    for item in line:
-        if type(item) == str:
-            remix.append(f"\"{item}\"")
-        else:
-            remix.append(str(item).lower())
+def benchmark(contract, size):
+    contract_dir = f"./contract/{contract}"
+    contracts = load_contracts(contract_dir)
+    main_contract = f"{contract}.sol"
+    main_contract = Path(contract_dir).joinpath(main_contract).resolve()
+    contracts.remove(main_contract)
+    records = load_data()[:size]
 
-    return ','.join(remix)
+    bc = Blockchain(blocking=BLOCKING, libraries=contracts,
+                    contract=main_contract, ipcfile='/home/mark/eth/node0/geth.ipc',
+                    timeout=120)
+    db = LocalDB()
+
+    result = {}
+
+    tx_hashs = []
+    elapsed = 0
+    for record in tqdm(records):
+        tx_hash = bc.insert(*record)
+        elapsed += timer(db.insert, *record)
+        tx_hashs.append(tx_hash)
+
+    receipts = bc.wait_all(tx_hashs)
+
+    totalGas = sum([r['gasUsed'] for r in receipts])
+
+    # Measured by gas
+    result['Storage'] = {'Unit': 'gas',
+                         'Total': totalGas, 'Average': totalGas // size}
+
+    # Measured by time
+    result['Insertion'] = {'Unit': 'second',
+                           'Total': elapsed, 'Average': elapsed / size}
+
+    query = {f"{i} *": 0 for i in range(4)}
+    query['Unit'] = 'second'
+    elapsed = timer(bc.query, "*", "*", "*")
+    query["3 *"] = elapsed
+
+    for key in tqdm(db.getKeys()):
+        pks = possibleKeys(key)
+        for i, pk in enumerate(pks):
+            elapsed = timer(bc.query, *pk)
+            if i in [0, 1, 3]:
+                query["2 *"] += elapsed
+            elif i in [2, 4, 5]:
+                query["1 *"] += elapsed
+            else:
+                query["0 *"] += elapsed
+
+    query["2 *"] /= (3*size)
+    query["1 *"] /= (3*size)
+    query["0 *"] /= size
+
+    result['Query'] = query
+
+    return result
 
 
 def main():
-    size = 0
-    if len(sys.argv) <= 1:
-        size = None
-    else:
-        size = int(sys.argv[1])
-    db = LocalDB()
-    bc = Blockchain(blocking=True, libraries=LIBRARIES, contract=CONTRACT)
-    records = load_data(DATA_DIR)[:size]
-
-    insertion_time = 0
-    totalGas = 0
-    for record in tqdm(records):
-        with open("insertion.log", 'a') as f:
-            f.write("%s\n" % convert_remix_input(record))
-        start = time.time()
-        r = bc.insert(*record)
-        insertion_time += (time.time() - start)
-        totalGas += (r['gasUsed'] - TRANSACTION_GAS)
-        db.insert(*record)
-
-    # db.query("*", "*", "*")
-
-    query_count = 0
-    query_time = 0
-    for key in tqdm(db.getKeys()):
-        pks = possibleKeys(key)
-        for pk in pks:
-            start = time.time()
-            bc.query(*pk)
-            query_time += time.time() - start
-            query_count += 1
-
-    result = {
-        "data size": len(records),
-        'total insert time': insertion_time,
-        "insert time per record": insertion_time / len(records),
-        "total storage used (in gas)": totalGas,
-        "storage per record": totalGas / len(records),
-        "total query time": query_time,
-        "query time per record": query_time / query_count
-    }
-
-    if not Path(BENCHMARK_FILE).exists():
-        with open(BENCHMARK_FILE, 'w') as outfile:
-            json.dump({}, outfile)
-
-    with open(BENCHMARK_FILE, 'r+') as outfile:
-        dic = json.load(outfile)
-        dic[BASELINE] = result
-        outfile.seek(0)
-        json.dump(dic, outfile)
+    sizes = [100 * (2**i) for i in range(5)]
+    # sizes = [100]
+    final = {s: {} for s in sizes}
+    baselines = [f"baseline{i}" for i in [3, 4]]
+    for size in sizes:
+        for baseline in baselines:
+            final[size][baseline] = benchmark(baseline, size)
+            with open('benchmark.json', 'w') as f:
+                json.dump(final, f)
 
 
 if __name__ == '__main__':
