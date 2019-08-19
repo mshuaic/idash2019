@@ -16,8 +16,10 @@ data_dir = '/home/mark/idash2019/data'
 # sql = [["*", "*", "*"], ["CYP3A5", "*", ""]]
 TRANSACTION_GAS = 21000
 
-BASELINE = 'baseline3'
-LIBRARIES = ['Utils.sol', 'Math.sol']
+BASELINE = 'baseline2'
+LIBRARIES = ['Utils.sol', 'Math.sol',
+             'Database.sol', 'GeneDrugLib.sol', 'StatLib.sol']
+# LIBRARIES = ['Utils.sol', 'Math.sol']
 CONTRACT = f"{BASELINE}.sol"
 CONTRACT_DIR = f"./contract/{BASELINE}"
 LIBRARIES = list(
@@ -28,7 +30,7 @@ CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 BLOCKING = False
 
 bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
-                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc', timeout=120)
+                contract=CONTRACT, ipcfile='/home/mark/blockchain/eth/node0/geth.ipc', timeout=120)
 
 # bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
 # contract = CONTRACT)
@@ -104,18 +106,21 @@ def test_compare_all(size):
     records = load_data(size)
 
     start = time.time()
+    tx_hashs = []
     totalGas = 0
     for record in tqdm(records):
         log.debug(convert_remix_input(record))
         with open("insertion.log", 'a') as f:
             f.write("%s\n" % convert_remix_input(record))
         r = bc.insert(*record)
+        tx_hashs.append(r)
         # totalGas += (r['gasUsed'] - TRANSACTION_GAS)
         # print(r['gasUsed'])
         db.insert(*record)
     insertion_time = (time.time() - start)
 
-    time.sleep(60)
+    # time.sleep(60)
+    bc.wait_all(tx_hashs)
 
     assert bc.query("*", "*", "*") == db.query("*", "*", "*")
 

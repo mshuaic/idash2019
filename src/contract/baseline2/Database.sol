@@ -9,11 +9,11 @@ library Database{
     }
     
     // maybe change storage to memory??
-    function insert(Table storage self, string memory key, uint index) public {
+    function insert(Table storage self, string memory key, uint index) internal {
         self.indexes[key].push(index);
     }
 
-    function query(Table storage self, string memory key) public view returns(uint[] memory) {
+    function query(Table storage self, string memory key) internal view returns(uint[] memory) {
         return self.indexes[key];        
     }
      
