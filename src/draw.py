@@ -19,6 +19,7 @@ plt.subplots_adjust(left=0.1, right=0.95, bottom=0.1,
 def draw(result, catalog, selection, unit):
     xlabels = list(result.keys())
     baselines = list(result[xlabels[0]])
+    baselines.remove('baseline4')
     # print(f"draw: {baselines}")
     bars = [None] * len(baselines)
 
