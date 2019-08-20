@@ -85,16 +85,8 @@ library Utils {
         return success;
     }
     
-    function equals(string memory s0, string memory s1) internal pure returns (bool) {
-        bytes memory _s0 = bytes(s0);
-        bytes memory _s1 = bytes(s1);
-        if(_s0.length != _s1.length){
-            return false;
-        }
-        return equal(_s0,_s1);
-        // assembly {
-        //     equal := eq(keccak256(addr, len), keccak256(addr2, len))
-        // }
+    function equals(string memory a, uint length) internal pure returns (bool) {
+      return bytes(a).length == length;
     }
     
     function isStar(string memory str) internal pure returns(bool) {
@@ -118,6 +110,18 @@ library Utils {
     }
 
     function shortestList(uint[][NUM_LIST] memory lists) internal pure returns(uint) {
+	// if (lists[0].length != 0 && lists[0].length <= lists[1].length
+	// 	  && lists[0].length <= lists[2].length){
+	//     return 0;
+	// } else if (lists[1].length != 0 && lists[1].length <= lists[0].length
+	// 	   && lists[1].length <= lists[2].length) {
+	//     return 1;
+	// } else if (lists[2].length != 0 && lists[2].length <= lists[0].length
+	// 	   && lists[2].length <= lists[1].length) {
+	//     return 2;
+	// }
+	// return 4;
+	    
         uint shortestIndex = 0;
         uint min = 2 ** 255;
         for (uint i=0;i<lists.length;i++) {
