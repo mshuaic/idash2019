@@ -11,19 +11,17 @@ contract baseline2 {
     using Database for Database.Table;
     uint8 internal constant ATTRIBUTES_NUM = 3; 
     Database.Table[ATTRIBUTES_NUM] tables;
-    /* GeneDrugLib.GeneDrug[] data; */
+
+    uint constant IMPROVED = 8;
+    uint constant UNCHANGED = 9;
+    uint constant DETERIORATED = 12;
     
     uint numObservations;
     uint numRelations;
     mapping (address => uint) numObservationsFromSenders;
-    mapping (bytes32 => uint) relations;
+    mapping (bytes => uint) relations;
     StatLib.Stat[] statStorage;
-    event debug(string);    
-    
-    // This structure is how the data should be returned from the query function.
-    // You do not have to store relations this way in your contract, only return them.
-    // geneName and drugName must be in the same capitalization as it was entered. E.g. if the original entry was GyNx3 then GYNX3 would be considered incorrect.
-    // Percentage values must be acurrate to 6 decimal places and will not include a % sign. E.g. "35.123456"
+
     struct GeneDrugRelation {
         string geneName;
         uint variantNumber;
@@ -54,34 +52,37 @@ contract baseline2 {
                                 bool suspectedRelation,
                                 bool seriousSideEffect
                                 ) public {
-        /* GeneDrugLib.GeneDrug memory ob = GeneDrugLib.GeneDrug(geneName,variantNumber,drugName,outcome,suspectedRelation,seriousSideEffect); */
-
-        /* data.push(ob); */
-
-        bytes32 key;
+        bytes memory key;
         StatLib.Stat memory stat;
-        // statStorage index starts from 1
-        uint index = numRelations+1;
+        uint index = 0;
         (key, stat) = StatLib.buildRelation(geneName,variantNumber,drugName,outcome,suspectedRelation,seriousSideEffect);
-       
-        // key is not in relations
         if (relations[key] == 0) {
             statStorage.push(stat);
+	    index = statStorage.length-1;
             relations[key] = index;
             numRelations++;
+	    tables[uint(GeneDrugLib.attributes.geneName)].insert(geneName,index);
+	    tables[uint(GeneDrugLib.attributes.variantNumber)].insert(Utils.uintToStr(variantNumber),index);
+	    tables[uint(GeneDrugLib.attributes.drugName)].insert(drugName,index);
         } else {
             index = relations[key];
-            statStorage[index] = StatLib.update(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
+            update(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
         }
-
-        tables[uint(GeneDrugLib.attributes.geneName)].insert(geneName,index);
-        tables[uint(GeneDrugLib.attributes.variantNumber)].insert(Utils.uintToStr(variantNumber),index);
-        tables[uint(GeneDrugLib.attributes.drugName)].insert(drugName,index);
         
         numObservations++;
         numObservationsFromSenders[msg.sender]++;
 
         
+    }
+    
+    function update(StatLib.Stat storage s, string memory outcome,
+                    bool suspectedRelation, bool seriousSideEffect) private{
+	s.totalCount += 1;
+        s.improvedCount += Utils.equals(outcome, IMPROVED) ? 1 : 0;
+        s.unchangedCount += Utils.equals(outcome, UNCHANGED) ? 1 : 0;
+        s.deterioratedCount += Utils.equals(outcome, DETERIORATED) ? 1 : 0;
+        s.suspectedRelationCount += suspectedRelation ? 1 : 0;
+        s.sideEffectCount += seriousSideEffect ? 1 : 0;
     }
 
     function query(GeneDrugLib.attributes attribute, string memory key) private view returns(uint[] memory) {
@@ -147,7 +148,6 @@ contract baseline2 {
         uint[] memory drugList = Utils.isStar(drugName) ? new uint[](0) : query(GeneDrugLib.attributes.drugName, drugName);
         /* uint[][] memory lists = [geneList, variantList, drugList]; */
         uint  shortestListIndex = Utils.shortestList([geneList, variantList, drugList]);
-        
         return Utils.intersect([geneList, variantList, drugList], shortestListIndex);
     }
     

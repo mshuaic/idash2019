@@ -122,6 +122,9 @@ def test_compare_all(size):
     # time.sleep(60)
     bc.wait_all(tx_hashs)
 
+    # print(bc.query("*", "*", "*"))
+    # print(db.query("*", "*", "*"))
+
     assert bc.query("*", "*", "*") == db.query("*", "*", "*")
 
     query_count = 0
@@ -129,23 +132,14 @@ def test_compare_all(size):
     for key in tqdm(db.getKeys()):
         pks = possibleKeys(key)
         for pk in pks:
+            with open("query.log", 'a') as f:
+                f.write("%s\n" % convert_remix_input(pk))
             log.debug(convert_remix_input(pk))
+            # print(bc.query(*pk))
+            # print(db.query(*pk))
             assert bc.query(*pk) == db.query(*pk)
             query_count += 1
     query_time = time.time() - start
-
-    # result = {
-    #     "data size": len(records),
-    #     'total insert time': insertion_time,
-    #     "insert time per record": insertion_time // len(records),
-    #     "total storage used (in gas)": totalGas,
-    #     "storage per record": totalGas // len(records),
-    #     "total query time": query_time,
-    #     "query time per record": query_time // query_count
-    # }
-
-    # with open("benchmark.json", 'w') as outfile:
-    #     json.dump(result, outfile)
 
 
 def test_localDB_getKeys():
