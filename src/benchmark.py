@@ -26,7 +26,7 @@ def benchmark(contract, size):
     main_contract = f"{contract}.sol"
     main_contract = Path(contract_dir).joinpath(main_contract).resolve()
     contracts.remove(main_contract)
-    records = load_data()[:size]
+    records = load_data(data_dir)[:size]
 
     bc = Blockchain(blocking=BLOCKING, libraries=contracts,
                     contract=main_contract, ipcfile='/home/mark/eth/node0/geth.ipc',
@@ -84,7 +84,7 @@ def benchmark(contract, size):
 
 
 def main():
-    sizes = [100 * (2**i) for i in range(5)]
+    sizes = [100 * (4**i) for i in range(4)]
     # sizes = [100]
     final = {s: {} for s in sizes}
     baselines = [f"baseline{i}" for i in [2, 3, 4, 5]]

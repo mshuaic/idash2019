@@ -1,6 +1,8 @@
 from enum import IntEnum
 import os
 import pandas as pd
+from pathlib import Path
+import time
 
 # class attribute(IntEnum):
 #     geneName = 0
@@ -83,7 +85,7 @@ def load_contracts(contract_dir, suffix='.sol'):
     return result
 
 
-def load_data(size=None):
+def load_data(data_dir, size=None):
     files = fileReader(data_dir)
     data = []
     for path in files.getFilePathes():
