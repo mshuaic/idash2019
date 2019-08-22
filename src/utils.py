@@ -1,6 +1,7 @@
 from enum import IntEnum
 import os
 import pandas as pd
+from pathlib import Path
 
 # class attribute(IntEnum):
 #     geneName = 0

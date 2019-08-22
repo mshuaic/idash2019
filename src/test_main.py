@@ -17,11 +17,12 @@ data_dir = '/home/mark/idash2019/data'
 TRANSACTION_GAS = 21000
 
 BASELINE = 'baseline2'
-LIBRARIES = ['Utils.sol', 'Math.sol',
-             'Database.sol', 'GeneDrugLib.sol', 'StatLib.sol']
-# LIBRARIES = ['Utils.sol', 'Math.sol']
 CONTRACT = f"{BASELINE}.sol"
 CONTRACT_DIR = f"./contract/{BASELINE}"
+LIBRARIES = load_contracts(CONTRACT_DIR, suffix='.sol')
+LIBRARIES.remove(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
+# LIBRARIES = ['Utils.sol', 'Math.sol']
+
 LIBRARIES = list(
     map(lambda x: str(Path(CONTRACT_DIR).joinpath(x).resolve()), LIBRARIES))
 
