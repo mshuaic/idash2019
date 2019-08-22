@@ -31,7 +31,7 @@ CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 BLOCKING = False
 
 bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
-                contract=CONTRACT, ipcfile='/home/mark/blockchain/eth/node0/geth.ipc', timeout=120)
+                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc', timeout=120)
 
 # bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
 # contract = CONTRACT)

@@ -26,7 +26,7 @@ def benchmark(contract, size):
     main_contract = f"{contract}.sol"
     main_contract = Path(contract_dir).joinpath(main_contract).resolve()
     contracts.remove(main_contract)
-    records = load_data()[:size]
+    records = load_data(data_dir)[:size]
 
     bc = Blockchain(blocking=BLOCKING, libraries=contracts,
                     contract=main_contract, ipcfile='/home/mark/eth/node0/geth.ipc',
@@ -70,22 +70,27 @@ def benchmark(contract, size):
             else:
                 query["0 *"] += elapsed
 
+    query["Average"] = query["2 *"] + \
+        query["1 *"] + query["0 *"] + query["3 *"]
+
+    query["Average"] /= (7 * size + 1)
+
     query["2 *"] /= (3*size)
     query["1 *"] /= (3*size)
     query["0 *"] /= size
-
     result['Query'] = query
 
     return result
 
 
 def main():
-    sizes = [100 * (2**i) for i in range(5)]
+    sizes = [100 * (4**i) for i in range(4)]
     # sizes = [100]
     final = {s: {} for s in sizes}
-    baselines = [f"baseline{i}" for i in [3, 4]]
+    baselines = [f"baseline{i}" for i in [2, 3, 4, 5]]
     for size in sizes:
         for baseline in baselines:
+            print(baseline)
             final[size][baseline] = benchmark(baseline, size)
             with open('benchmark.json', 'w') as f:
                 json.dump(final, f)

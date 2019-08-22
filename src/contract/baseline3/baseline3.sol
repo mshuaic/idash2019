@@ -57,7 +57,7 @@ contract baseline3 {
 	    numRelations++;
 	} else {
 	    uint index = relations[key][0];
-            statStorage[index] = updateRelation(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
+            updateRelation(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
 	}
 	
         numObservations++;
