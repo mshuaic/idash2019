@@ -15,6 +15,12 @@ class Node:
     def query(self, *args):
         return self.interface.retrieve("query", *args)
 
+    def getNumRelations(self):
+        return self.interface.retrieve("getNumRelations")
+
+    def getNumObservations(self):
+        return self.interface.retrieve("getNumObservations")
+
     def wait_all(self, tx_hashs):
         return self.interface.wait_all(tx_hashs)
 

@@ -1,9 +1,11 @@
+// Author: Emory Team
+// Date: 08/23/2019
+
 pragma solidity ^0.5.9;
 pragma experimental ABIEncoderV2;
 
-contract baseline5 {
+contract GeneDrugRepo {
     uint numObservations;
-    uint numRelations;
     mapping (address => uint) numObservationsFromSenders;
     mapping (bytes => uint[]) relations;
     Stat[] statStorage;
@@ -64,7 +66,7 @@ contract baseline5 {
 	    for (uint i=0;i<8;i++){
 		relations[keys[i]].push(index);
 	    }
-	    numRelations++;
+	    // numRelations++;
 	} else {
 	    index = relations[key][0];
             updateStat(statStorage[index], outcome,suspectedRelation,seriousSideEffect);
@@ -154,7 +156,7 @@ contract baseline5 {
     /** Return the total number of known relations, a.k.a. the number of unique geneName,-name, variant-number, drug-name pairs
      */
     function getNumRelations () public view returns(uint){
-        return numRelations;
+	return statStorage.length;
     }
     
     /** Return the total number of recorded observations, regardless of sender.

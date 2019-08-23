@@ -44,6 +44,19 @@ class LocalDB(Database):
         return self._get_stat(relations)
         # return list(result.itertuples(index=False, name=False))
 
+    def getNumRelations(self):
+        result = self.db
+        observations = list(result.itertuples(index=False))
+        Relation = namedtuple(
+            'Relation', ["geneName", "variantNumber", "drugName"])
+        relations = set()
+        for ob in observations:
+            relation = Relation(ob.geneName, ob.variantNumber, ob.drugName)
+            relations.add(relation)
+            # relations.setdefault(relation, []).append(outcome)
+
+        return len(relations)
+
     def _get_stat(self, relations):
         result = []
         for relation, outcomes in relations.items():

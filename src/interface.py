@@ -27,6 +27,8 @@ class interface:
         self.blocking = blocking
 
     def deploy_libraries(self, libraries, remappings=None):
+        if libraries == None:
+            return
         compiled_libraries = compile_files(
             libraries, import_remappings=remappings)
         for name, compiled_library in compiled_libraries.items():

@@ -4,14 +4,6 @@ import pandas as pd
 from pathlib import Path
 import time
 
-# class attribute(IntEnum):
-#     geneName = 0
-#     variantNumber = 1
-#     drugName = 2
-#     outcome = 3
-#     relation = 4
-#     sideEffect = 5
-
 
 class outcome(IntEnum):
     UNCHANGED = 0

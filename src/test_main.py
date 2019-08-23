@@ -16,22 +16,23 @@ data_dir = '/home/mark/idash2019/data'
 # sql = [["*", "*", "*"], ["CYP3A5", "*", ""]]
 TRANSACTION_GAS = 21000
 
-BASELINE = 'baseline2'
+BASELINE = 'GeneDrugRepo'
 CONTRACT = f"{BASELINE}.sol"
 CONTRACT_DIR = f"./contract/{BASELINE}"
 LIBRARIES = load_contracts(CONTRACT_DIR, suffix='.sol')
 LIBRARIES.remove(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 # LIBRARIES = ['Utils.sol', 'Math.sol']
 
-LIBRARIES = list(
-    map(lambda x: str(Path(CONTRACT_DIR).joinpath(x).resolve()), LIBRARIES))
+# LIBRARIES = list(
+# map(lambda x: str(Path(CONTRACT_DIR).joinpath(x).resolve()), LIBRARIES))
 
+# LIBRARIES = None
 CONTRACT = str(Path(CONTRACT_DIR).joinpath(CONTRACT).resolve())
 
 BLOCKING = False
 
-bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
-                contract=CONTRACT, ipcfile='/home/mark/eth/node0/geth.ipc', timeout=120)
+bc = Blockchain(blocking=BLOCKING, libraries=None,
+                contract=CONTRACT, ipcfile='/home/mark/blockchain/eth/node0/geth.ipc', timeout=120)
 
 # bc = Blockchain(blocking=BLOCKING, libraries=LIBRARIES,
 # contract = CONTRACT)
@@ -84,20 +85,32 @@ def test_div():
     assert div(35, 3) == "11.666666"
 
 
-def test_compare_single():
+def test_compare_single(size):
     # bc = Blockchain(blocking=False)
     db = LocalDB()
 
-    records = load_data(size=1)
+    records = load_data(size)
 
+    tx_hashs = []
     for record in tqdm(records):
         convert_remix_input(record)
-        bc.insert(*record)
+        r = bc.insert(*record)
         db.insert(*record)
+        tx_hashs.append(r)
 
+    bc.wait_all(tx_hashs)
+    # time.sleep(5)
+    # print()
+
+    sql = ['*', '*', '*']
     log.debug("blockchain: %s" % bc.query(*sql))
     log.debug("localDB: %s" % db.query(*sql))
-    assert bc.query(*sql) == db.query(*sql)
+
+    assert bc.getNumRelations() == db.getNumRelations()
+    # print(bc.query(*sql))
+    print("num relations: ", bc.getNumRelations())
+    print("num observations: ", bc.getNumObservations())
+    # assert bc.query(*sql) == db.query(*sql)
 
 
 def test_compare_all(size):
@@ -127,6 +140,8 @@ def test_compare_all(size):
     # print(db.query("*", "*", "*"))
 
     assert bc.query("*", "*", "*") == db.query("*", "*", "*")
+    assert bc.getNumRelations() == db.getNumRelations()
+    assert bc.getNumRelations() != 0
 
     query_count = 0
     start = time.time()
