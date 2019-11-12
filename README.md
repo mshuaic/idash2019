@@ -1,70 +1,29 @@
 # iDash2019 Track 1
 
+## Competition Task 
+ - [iDash 2019 Privacy and Security](http://www.humangenomeprivacy.org/2019/competition-tasks.html)
+ 
+
+
 ## Menu
  - [Prerequisites](#prerequisites)
- - [Install go-ethereum](#install-go-ethereum)
  - [Setup Ethereum](#setup-ethereum)
- - [Connect Peers](#connect-peers)
- - [Smart Contract](#smart-contract)
- - [Useful Links](#useful-links)
+ - [Implementation](#implementation)
+
 
 ## Prerequisites
- - Install *go*:  https://golang.org/dl/
+ - Install [*go*](https://golang.org/dl/), [*solc*](https://solidity.readthedocs.io/en/latest/installing-solidity.html), [*go-ethereum*](https://github.com/ethereum/go-ethereum),[*jq*](https://stedolan.github.io/jq/)
 	
-
-## Install go-ethereum
- - Download go-ethereum  
- `git clone https://github.com/ethereum/go-ethereum`
- - Switch to the required the commit ([FAQ Q4](https://docs.google.com/document/d/1oGcCKYwqATImAm5hTjY5GjfHvUI0Gd_fpYRR8po4joA/edit)).  
- `git checkout 4bcc0a37`
- - Build *geth* and *bootnode*  
- `make all`
-
 ## Setup Ethereum
- - Default storage is in */home/ligi/.ethereum*
- - Create an account  
- `geth --datadir node0 account new`
- - Create a genesis file *genesis.json*. Replace *ADDRESS* with your account address.
-	```
-	{
-	   "config": {
-		   "chainId": 1,
-		   "homesteadBlock": 0,
-		   "eip155Block": 0,
-		   "eip158Block": 0
-	   },
-	   "difficulty": "1",
-	   "gasLimit": "0xffffffff",
-	   "alloc": {
-		   "ADDRESS": { "balance": "400000" }
-	   }
-	} 
-	```
- - Initialize genesis block   
- `geth --datadir node0 init genesis.json`
- 
- - Start Ethereum peer node  
- `geth --datadir node0 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3"`  
- It returns a enode link: *enode://xxxxxxx@127.0.0.1:30303*
-## Connect Peers
- - Initialize genesis block in **different** location  
-   `geth --datadir node1 init genesis.json`
+	bash build.sh
+	
+It builds 4 Ethereum nodes, and only one of them will be mining with default 8 threads.
 
- - Start Ethereum peer node with **different** ports and location  
-   `geth --datadir node1 --networkid 1 --rpc --rpccorsdomain "*" --nodiscover --rpcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --port 30304 --rpcport 8546` 
-   
- - rpc to the master node  
-   `geth attach http://127.0.0.1:8545`  
-   `admin.addPeers("enode://xxxxxxx@127.0.0.1:30303")`
 
- - Check if peer is connected  
-   `admin.peers`
+## Implementation
+ - [GeneDrugRepo.sol](src/contract/GeneDrugRepo/GeneDrugRepo.sol): The final submitted solution
+ - [benchmark.py](src/benchmark.py): benchmark tool
+   - [draw.py](src/draw.py): benchmark plot drawing tool
+   - [database.py](src/database.py): local database
+   - [blockchain.py](src/blockchain.py): blockchain interface
 
-## Smart Contract
-	TODO
- 
-## Useful Links
- - https://github.com/ethereum/go-ethereum
- - https://github.com/ethereum/go-ethereum/wiki/Private-network
- - https://geth.ethereum.org/interface/Command-Line-Options
- - https://github.com/ethereum/go-ethereum/wiki/Management-APIs
