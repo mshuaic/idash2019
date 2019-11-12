@@ -1,4 +1,4 @@
-# iDash2019 Track 1
+# iDash2019 Blockchain Track
 
 ## Competition Task 
  - [iDash 2019 Privacy and Security](http://www.humangenomeprivacy.org/2019/competition-tasks.html)
